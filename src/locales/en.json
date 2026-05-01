@@ -1,0 +1,176 @@
+{
+  "nav": {
+    "home": "Home",
+    "about": "About Us",
+    "products": "Products",
+    "gallery": "Our Gallery",
+    "contact": "Contact"
+  },
+  "gallery": {
+    "title": "Our <1>Gallery</1>",
+    "subtitle": "Explore our state-of-the-art production facility and premium product range.",
+    "filters": {
+      "all": "All",
+      "factory": "Factory",
+      "products": "Products",
+      "events": "Events"
+    }
+  },
+  "hero": {
+    "title": "Connecting the World with",
+    "highlight": "Speed of Light",
+    "cta": "Explore Products",
+    "book": "Book Consultation",
+    "subtitle": "Premium Optical Fiber Solutions manufactured in Mary, Turkmenistan."
+  },
+  "home": {
+    "manufacturing": {
+      "label": "Manufacturing",
+      "title": "State-of-the-art Production Facility in Mary, Turkmenistan",
+      "description": "Döwletli utilizes cutting-edge extrusion technology and automated quality control systems to ensure every meter of cable exceeds industry standards.",
+      "stats": {
+        "cycle": "Production Cycle",
+        "quality": "Quality Tested"
+      },
+      "badge": {
+        "title": "Located in Mary",
+        "description": "Strategic logistics hub for Central Asia export"
+      }
+    }
+  },
+  "features": {
+    "quality": {
+      "title": "Premium Quality",
+      "description": "Engineered for excellence. Our optical cables meet rigorous international standards for performance and durability."
+    },
+    "global": {
+      "title": "Global Standards",
+      "description": "Certified compliance with ISO and IEC specifications ensures seamless integration into worldwide networks."
+    },
+    "reliable": {
+      "title": "Reliable Connectivity",
+      "description": "Designed to withstand harsh environments, delivering uninterrupted signal transmission 24/7."
+    }
+  },
+  "products": {
+    "title": "Our <1>Products</1>",
+    "subtitle": "Explore our range of high-performance optical fiber cables designed for global connectivity.",
+    "viewDetails": "View Specs",
+    "categories": {
+      "aerial": "Aerial",
+      "underground": "Underground",
+      "ftth": "FTTH",
+      "directBurial": "Direct Burial"
+    },
+    "items": {
+      "selfSupporting": {
+        "title": "Self-Supporting Cable",
+        "description": "Optical self-supporting cable for suspension on supports of communication lines, power transmission lines, and railways.",
+        "specs": [
+           "Central optical module",
+           "Intra-modular hydrophobic filler",
+           "Peripheral strength element - aramid threads",
+           "Outer shell - light-stabilized polyethylene"
+        ]
+      },
+      "armoredDuct": {
+        "title": "Armored Duct Cable",
+        "description": "Distributor cable for ducts (plastic pipes) and suspension on supports of communication lines.",
+        "specs": [
+          "Central optical module",
+          "Armor - layer of galvanized steel wire",
+          "Outer shell - light-stabilized resistant to UV"
+        ]
+      },
+      "flatDrop": {
+        "title": "Flat Drop Cable",
+        "description": "Distribution cable in a flat design, intended for suspension on communication towers and urban transport.",
+        "specs": [
+          "Central optical module",
+          "Peripheral power element - fiberglass rods",
+          "Intra-modular hydrophobic filler"
+        ]
+      },
+      "figure8": {
+        "title": "Figure-8 Aerial Cable",
+        "description": "Trunk optical cable with a supporting power element (steel cable) for suspension on support lines.",
+        "specs": [
+          "Load-bearing power element - steel cable",
+          "Central optical module",
+          "Outer shell - light-stabilized polyethylene"
+        ]
+      },
+      "armoredSoil": {
+        "title": "Buried Armored Cable",
+        "description": "Trunk optical cable for direct burial in soil of all categories, overpasses, and bridges.",
+        "specs": [
+           "Armor - layer of galvanized steel wire",
+           "Intra-modular hydrophobic filler",
+           "Outer shell - light-stabilized polyethylene"
+        ]
+      }
+    }
+  },
+  "about": {
+    "title": "About <1>Döwletli</1>",
+    "label": "Our Story",
+    "story": {
+      "title": "More than just cables."
+    },
+    "description": "Modern production complex in Mary, Turkmenistan. We produce high-quality optical cables for global markets.",
+    "history": "As the country's sole producer of optical fiber cables, we are driving the national IT market forward. Our expertise extends beyond connectivity to the manufacturing of high-quality computer chassis.",
+    "expansion": "Actively expanding our portfolio, we are launching advanced network hardware production to meet the demands of a digital future.",
+    "mission": "To provide reliable and high-speed connectivity solutions to the world."
+  },
+  "contact": {
+    "title": "Contact Us",
+    "hero_title": "Contact <1>Us</1>",
+    "labels": {
+      "location": "Factory Location",
+      "phone": "Phone",
+      "email": "Email"
+    },
+    "form": {
+      "name": "Your Name",
+      "email": "Email Address",
+      "message": "Message",
+      "send": "Send Message",
+      "sending": "Sending...",
+      "success": "Message Sent!"
+    },
+    "info": {
+      "address": "Turkmenistan, Mary velayat, 16th km of Mary - Ashgabat highway",
+      "email": "dowletlicabel@gmail.com",
+      "phone": "+993 52 22 22 22",
+      "mobile": "+993 65 59 02 27"
+    },
+    "badges": {
+      "global": "Global Reach",
+      "facility": "Production Facility"
+    },
+    "subtitle": "Connect with our engineering team for custom specifications and global logistics solutions.",
+    "sendMessage": "Send us a message"
+  },
+  "booking": {
+    "title": "Book a Consultation",
+    "subtitle": "Schedule a meeting with our technical experts.",
+    "selectService": "Select Service",
+    "selectDate": "Select Date",
+    "selectTime": "Select Time",
+    "yourInfo": "Your Information",
+    "confirm": "Confirm Booking",
+    "services": {
+      "technical": "Technical Consultation",
+      "sales": "Sales Inquiry",
+      "tour": "Factory Tour"
+    }
+  },
+  "footer": {
+    "company": "Company",
+    "story": "Our Story",
+    "technology": "Technology",
+    "careers": "Careers",
+    "news": "News & Events",
+    "rights": "All Rights Reserved."
+  }
+}

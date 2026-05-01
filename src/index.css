@@ -1,0 +1,29 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-brand-navy text-brand-white selection:bg-brand-cyan/30 selection:text-brand-white antialiased;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply tracking-tight font-bold text-brand-white;
+  }
+}
+
+.glass-panel {
+  @apply bg-brand-surface/70 backdrop-blur-md border border-brand-white/10 shadow-glass;
+}
+
+.text-gradient {
+  @apply bg-clip-text text-transparent bg-gradient-to-r from-brand-white via-brand-white to-brand-slate;
+}
+
+.text-gradient-primary {
+  @apply bg-clip-text text-transparent bg-gradient-to-r from-brand-cyan to-brand-primary;
+}
+
+.section-padding {
+  @apply py-20 px-6;
+}

@@ -1,0 +1,176 @@
+{
+  "nav": {
+    "home": "Baş Sahypa",
+    "about": "Biz Barada",
+    "products": "Önümler",
+    "gallery": "Galereýa",
+    "contact": "Habarlaşmak"
+  },
+  "gallery": {
+    "title": "Biz <1>Galereýa</1>",
+    "subtitle": "Döwrebap önümçilik toplumymyzy we ýokary hilli önümlerimizi görüň.",
+    "filters": {
+      "all": "Hemmesi",
+      "factory": "Fabrik",
+      "products": "Önümler",
+      "events": "Çäreler"
+    }
+  },
+  "hero": {
+    "title": "Dünýäni birikdirýäris",
+    "highlight": "Yşyk Tizligi Bilen",
+    "cta": "Önümleri Gör",
+    "book": "Maslahat Almak",
+    "subtitle": "Türkmenistanyň Mary şäherinde öndürilen ýokary hilli optiki süýümli çözgütler."
+  },
+  "home": {
+    "manufacturing": {
+      "label": "Önümçilik",
+      "title": "Mary şäherindäki döwrebap önümçilik toplumy",
+      "description": "Döwletli her bir kabeliň senagat standartlaryndan ýokary bolmagyny üpjün etmek üçin iň kämil ekstruziýa tehnologiýasyny we awtomatlaşdyrylan hil gözegçilik ulgamlaryny ulanýar.",
+      "stats": {
+        "cycle": "Önümçilik tapgyry",
+        "quality": "Hil barlagyndan geçen"
+      },
+      "badge": {
+        "title": "Ýerleşýän ýeri: Mary",
+        "description": "Merkezi Aziýa eksporty üçin strategiki logistika merkezi"
+      }
+    }
+  },
+  "features": {
+    "quality": {
+      "title": "Ýokary Hilli",
+      "description": "Kämillik üçin döredildi. Biziň kabellerimiz öndürijilik boýunça halkara standartlaryna doly laýyk gelýär."
+    },
+    "global": {
+      "title": "Dünýä Standartlary",
+      "description": "ISO we IEC talaplaryna laýyklyk, dünýä toryna bökdençsiz birikmegi kepillendirýär."
+    },
+    "reliable": {
+      "title": "Ynamdar Aragatnaşyk",
+      "description": "Agyr şertlere döz gelmek üçin niýetlenen, 24/7 üznüksiz signal geçirijiligi üpjün edýär."
+    }
+  },
+  "products": {
+    "title": "Bizim <1>Önümlerimiz</1>",
+    "subtitle": "Dünýä bilen birikmek üçin niýetlenen ýokary öndürijilikli optiki süýümli kabellerimizi öwreniň.",
+    "viewDetails": "Giňişleýin",
+    "categories": {
+      "aerial": "Asma",
+      "underground": "Yerasty",
+      "ftth": "FTTH",
+      "directBurial": "Göni Gömülýän"
+    },
+    "items": {
+      "selfSupporting": {
+        "title": "Öz-özüni göterýän kabel",
+        "description": "Aragatnaşyk liniýalarynyň, elektrik geçiriji liniýalaryň we demir ýollaryň direglerine asmak üçin niýetlenen optiki öz-özüni göterýän kabel.",
+        "specs": [
+           "Merkezi optiki modul",
+           "Modul içindäki gidrofob dolduryjy",
+           "Daşky güýçlendiriji element - aramid ýüpler",
+           "Daşky örtük - ýagtylyga durnukly polietilen"
+        ]
+      },
+      "armoredDuct": {
+        "title": "Kanalizasiýa üçin sowutlanan kabel",
+        "description": "Kabel kanalizasiýalarynda (plastmassa turbalarda) geçirmek we aragatnaşyk liniýalarynyň direglerine asmak üçin paýlaýjy kabel.",
+        "specs": [
+          "Merkezi optiki modul",
+          "Sowut - sinklenen polat sim gatlagy",
+          "Daşky örtük - ýagtylyga we gün şöhlesine durnukly"
+        ]
+      },
+      "flatDrop": {
+        "title": "Ýasy \"Drop\" kabeli",
+        "description": "Aragatnaşyk diňlerine we şäher ulaglarynyň direglerine asmak üçin niýetlenen ýasy gurluşly paýlaýjy kabel.",
+        "specs": [
+          "Merkezi optiki modul",
+          "Daşky güýçlendiriji element - aýna süýümli çybyklar",
+          "Modul içindäki gidrofob dolduryjy"
+        ]
+      },
+      "figure8": {
+        "title": "\"8\" görnüşli asma kabel",
+        "description": "Aragatnaşyk liniýalarynyň direglerine asmak üçin daşky güýçlendiriji elementi (polat tros) bolan magistral optiki kabel.",
+        "specs": [
+          "Göteriji güýç elementi - polat tros",
+          "Merkezi optiki modul",
+          "Daşky örtük - ýagtylyga durnukly polietilen"
+        ]
+      },
+      "armoredSoil": {
+        "title": "Topraga gömlýän sowutlanan kabel",
+        "description": "Ähli kategoriýadaky topraga, estakadalara we köprülere gömmek üçin niýetlenen magistral optiki kabel.",
+        "specs": [
+           "Sowut - sinklenen polat sim gatlagy",
+           "Modul içindäki gidrofob dolduryjy",
+           "Daşky örtük - ýagtylyga durnukly polietilen"
+        ]
+      }
+    }
+  },
+  "about": {
+    "title": "<1>Döwletli</1> Barada",
+    "label": "Taryhymyz",
+    "story": {
+      "title": "Diňe bir kabel däl."
+    },
+    "description": "Mary şäherindäki döwrebap önümçilik toplumy. Biz dünýä bazarlary üçin ýokary hilli optiki kabelleri öndürýäris.",
+    "history": "Ýurtda ýeke-täk optiki süýümli kabel öndüriji hökmünde biz milli IT bazaryny öňe sürýäris. Biziň tejribämiz diňe bir aragatnaşyk bilen çäklenmän, ýokary hilli kompýuter korpuslaryny öndürmegi hem öz içine alýar.",
+    "expansion": "Portfelimizi işjeň giňeltmek bilen, sanly geljegiň talaplaryny kanagatlandyrmak üçin kämil ulgam enjamlarynyň önümçiligini ýola goýýarys.",
+    "mission": "Dünýäni ygtybarly we ýokary tizlikli aragatnaşyk çözgütleri bilen üpjün etmek."
+  },
+  "contact": {
+    "title": "Biz Bilen Habarlaşyň",
+    "hero_title": "Biz Bilen <1>Habarlaşyň</1>",
+    "labels": {
+      "location": "Fabrik Ýerleşişi",
+      "phone": "Telefon",
+      "email": "Elektron poçta"
+    },
+    "form": {
+      "name": "Adyňyz",
+      "email": "Email Salgyňyz",
+      "message": "Hatyňyz",
+      "send": "Ugratmak",
+      "sending": "Ugradylýar...",
+      "success": "Ugradyldy!"
+    },
+    "info": {
+      "address": "Türkmenistan, Mary welaýaty, Mary - Aşgabat ýolunyñ 16-njy kilometrligi",
+      "email": "dowletlicabel@gmail.com",
+      "phone": "+993 52 22 22 22",
+      "mobile": "+993 65 59 02 27"
+    },
+    "badges": {
+      "global": "Halkara Dereje",
+      "facility": "Önümçilik Desgasy"
+    },
+    "subtitle": "Aýratyn talaplar we halkara logistika çözgütleri üçin inženerlerimiz bilen habarlaşyň.",
+    "sendMessage": "Bize hat ugradyň"
+  },
+  "booking": {
+    "title": "Maslahat Almak Üçin Ýazylyň",
+    "subtitle": "Tehniki hünärmenlerimiz bilen duşuşyk belläň.",
+    "selectService": "Hyzmaty Saýlaň",
+    "selectDate": "Senäni Saýlaň",
+    "selectTime": "Wagty Saýlaň",
+    "yourInfo": "Maglumatlaryňyz",
+    "confirm": "Yazylmak",
+    "services": {
+      "technical": "Tehniki Maslahat",
+      "sales": "Satuw Soraglary",
+      "tour": "Zawoda Aýlanmak"
+    }
+  },
+  "footer": {
+    "company": "Kompaniýa",
+    "story": "Biz Barada",
+    "technology": "Tehnologiýa",
+    "careers": "Kariýera",
+    "news": "Täzelikler",
+    "rights": "Ähli hukuklar goralan."
+  }
+}
