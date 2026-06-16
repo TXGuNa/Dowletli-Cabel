@@ -1,18 +1,18 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Menu, X } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import LanguageSwitcher from './LanguageSwitcher';
 
 export default function Header() {
   const { t } = useTranslation();
+  const location = useLocation();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
-    };
+    const handleScroll = () => setIsScrolled(window.scrollY > 20);
+    handleScroll();
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -25,20 +25,22 @@ export default function Header() {
     { key: 'contact', path: '/contact' },
   ];
 
+  const isActive = (path: string) =>
+    path === '/' ? location.pathname === '/' : location.pathname.startsWith(path);
+
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled ? 'bg-brand-navy/90 backdrop-blur-md py-4 shadow-glass' : 'bg-transparent py-6'
+        isScrolled
+          ? 'bg-white/60 backdrop-blur-xl py-3 border-b border-white/60 shadow-soft'
+          : 'bg-transparent py-5 border-b border-transparent'
       }`}
     >
       <div className="container mx-auto px-6 flex items-center justify-between">
-        <Link to="/" className="flex items-center gap-2 group">
-          <div className="relative">
-             <div className="absolute inset-0 bg-brand-cyan/20 blur-lg rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
-             <img src="/assets/logo.png" alt="Döwletli Logo" className="relative h-10 w-10 object-contain" />
-          </div>
-          <span className="text-2xl font-bold tracking-wider text-brand-white">
-            DÖWLETLI CABEL
+        <Link to="/" className="flex items-center gap-2.5 group">
+          <img src="/assets/logo.png" alt="Döwletli Logo" className="h-9 w-9 object-contain" />
+          <span className="text-lg font-extrabold tracking-tight text-brand-ink">
+            {t('brand.name')}
           </span>
         </Link>
 
@@ -48,41 +50,50 @@ export default function Header() {
             <Link
               key={link.key}
               to={link.path}
-              className="text-brand-slate hover:text-brand-cyan font-medium transition-colors text-sm uppercase tracking-wide"
+              className={`text-sm font-medium transition-colors ${
+                isActive(link.path) ? 'text-brand-ink' : 'text-brand-slate hover:text-brand-ink'
+              }`}
             >
               {t(`nav.${link.key}`)}
             </Link>
           ))}
+          <span className="w-px h-5 bg-brand-border" />
           <LanguageSwitcher />
-          
-
+          <Link to="/book" className="btn-primary !px-5 !py-2.5 text-sm">
+            {t('hero.book')}
+          </Link>
         </nav>
 
         {/* Mobile Toggle */}
         <button
-          className="md:hidden text-brand-white"
+          className="md:hidden text-brand-ink p-1"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          aria-label="Menu"
         >
-          {isMobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
+          {isMobileMenuOpen ? <X size={26} /> : <Menu size={26} />}
         </button>
       </div>
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="md:hidden absolute top-full left-0 right-0 bg-brand-navy/95 backdrop-blur-lg border-t border-brand-white/10 p-6 flex flex-col gap-4 shadow-xl h-screen">
+        <div className="md:hidden absolute top-full left-0 right-0 bg-white/80 backdrop-blur-xl border-t border-white/60 shadow-card p-6 flex flex-col gap-1">
           {navLinks.map((link) => (
             <Link
               key={link.key}
               to={link.path}
               onClick={() => setIsMobileMenuOpen(false)}
-              className="text-lg font-medium text-brand-white hover:text-brand-cyan py-2 border-b border-brand-white/5"
+              className={`text-lg font-medium py-3 border-b border-brand-border ${
+                isActive(link.path) ? 'text-brand-ink' : 'text-brand-slate'
+              }`}
             >
               {t(`nav.${link.key}`)}
             </Link>
           ))}
-          <div className="pt-4 flex flex-col gap-4">
+          <div className="pt-5 flex items-center justify-between gap-4">
             <LanguageSwitcher />
-
+            <Link to="/book" onClick={() => setIsMobileMenuOpen(false)} className="btn-primary text-sm flex-1">
+              {t('hero.book')}
+            </Link>
           </div>
         </div>
       )}

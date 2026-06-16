@@ -1,29 +1,70 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
-    @apply bg-brand-navy text-brand-white selection:bg-brand-cyan/30 selection:text-brand-white antialiased;
+    @apply bg-brand-bg text-brand-text antialiased;
+    font-feature-settings: "cv11", "ss01";
   }
-  
+
   h1, h2, h3, h4, h5, h6 {
-    @apply tracking-tight font-bold text-brand-white;
+    @apply tracking-tight font-bold text-brand-ink;
   }
 }
 
-.glass-panel {
-  @apply bg-brand-surface/70 backdrop-blur-md border border-brand-white/10 shadow-glass;
+@layer components {
+  /* Frosted glass surfaces */
+  .glass {
+    @apply bg-white/60 backdrop-blur-xl border border-white/70 shadow-glass;
+  }
+  .glass-strong {
+    @apply bg-white/80 backdrop-blur-xl border border-white/80 shadow-glass;
+  }
+  .glass-panel {
+    @apply bg-white/70 backdrop-blur-xl border border-white/70 shadow-glass;
+  }
+
+  /* Highlighted words get the blue→cyan gradient */
+  .text-gradient,
+  .text-gradient-primary {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-brand-primary via-brand-blue to-brand-cyan;
+  }
+
+  .section-padding {
+    @apply py-24 px-6;
+  }
+
+  .eyebrow {
+    @apply inline-flex items-center gap-2 text-xs font-semibold tracking-[0.18em] uppercase text-brand-primary;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 bg-gradient-to-r from-brand-primary to-brand-cyan text-white px-7 py-3.5 rounded-full font-semibold shadow-soft hover:shadow-glow hover:-translate-y-0.5 transition-all duration-300;
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 bg-white/60 backdrop-blur-md text-brand-ink px-7 py-3.5 rounded-full font-semibold border border-white/70 shadow-soft hover:border-brand-primary/30 hover:-translate-y-0.5 transition-all duration-300;
+  }
 }
 
-.text-gradient {
-  @apply bg-clip-text text-transparent bg-gradient-to-r from-brand-white via-brand-white to-brand-slate;
+/* Custom scrollbar for a polished feel */
+::-webkit-scrollbar {
+  width: 10px;
 }
-
-.text-gradient-primary {
-  @apply bg-clip-text text-transparent bg-gradient-to-r from-brand-cyan to-brand-primary;
+::-webkit-scrollbar-track {
+  background: #E9F1FF;
 }
-
-.section-padding {
-  @apply py-20 px-6;
+::-webkit-scrollbar-thumb {
+  background: #BFD3F5;
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #2563EB;
 }

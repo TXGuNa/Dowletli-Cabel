@@ -8,7 +8,6 @@ export default function Gallery() {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
-  // Handle ESC key to close modal
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
       if (e.key === 'Escape') setSelectedImage(null);
@@ -25,25 +24,22 @@ export default function Gallery() {
   ];
 
   const images = [
-    { src: '/assets/about-us-new.jpg', category: 'events', aspect: 'landscape' },
-    { src: '/assets/factory-interior-new.jpg', category: 'factory', aspect: 'landscape' },
-    { src: '/assets/product-self-supporting.png', category: 'products', aspect: 'square' },
-    { src: '/assets/product-armored-duct.png', category: 'products', aspect: 'square' },
-    { src: '/assets/hero-bg.png', category: 'factory', aspect: 'landscape' },
-    { src: '/assets/product-flat-drop.png', category: 'products', aspect: 'square' },
+    { src: '/assets/about-us-new.jpg', category: 'events' },
+    { src: '/assets/factory-interior-new.jpg', category: 'factory' },
+    { src: '/assets/product-self-supporting.png', category: 'products' },
+    { src: '/assets/product-armored-duct.png', category: 'products' },
+    { src: '/assets/hero-bg.png', category: 'factory' },
+    { src: '/assets/product-flat-drop.png', category: 'products' },
   ];
 
-  const filteredImages = selectedCategory === 'all' 
-    ? images 
-    : images.filter(img => img.category === selectedCategory);
+  const filteredImages =
+    selectedCategory === 'all' ? images : images.filter((img) => img.category === selectedCategory);
 
   return (
-    <div className="min-h-screen bg-brand-dark relative overflow-hidden">
-      {/* Background Ambience */}
-      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-brand-cyan/5 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-brand-primary/5 rounded-full blur-[120px] pointer-events-none" />
-
-      {/* Lightbox Modal */}
+    <div className="min-h-screen bg-brand-bg relative overflow-hidden">
+      <div className="absolute top-0 right-0 w-[480px] h-[480px] bg-brand-cyan/12 rounded-full blur-[150px] pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-[480px] h-[480px] bg-brand-primary/12 rounded-full blur-[150px] pointer-events-none" />
+      {/* Lightbox */}
       <AnimatePresence>
         {selectedImage && (
           <motion.div
@@ -51,101 +47,83 @@ export default function Gallery() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setSelectedImage(null)}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-brand-dark/95 backdrop-blur-sm p-4 md:p-10 cursor-zoom-out"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-brand-ink/90 backdrop-blur-sm p-4 md:p-10 cursor-zoom-out"
           >
-            {/* Close Button */}
             <button
               onClick={() => setSelectedImage(null)}
-              className="absolute top-6 right-6 p-2 rounded-full bg-brand-white/10 text-white hover:bg-brand-primary hover:text-white transition-all z-50"
+              className="absolute top-6 right-6 p-2 rounded-full bg-white/10 text-white hover:bg-white/20 transition-all z-50"
             >
-              <X size={32} />
+              <X size={28} />
             </button>
-
             <motion.img
-              initial={{ scale: 0.9, opacity: 0 }}
+              initial={{ scale: 0.94, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
+              exit={{ scale: 0.94, opacity: 0 }}
               src={selectedImage}
-              alt="Gallery Fullscreen"
-              className="max-w-full max-h-full object-contain rounded-lg shadow-2xl border border-brand-white/10"
-              onClick={(e) => e.stopPropagation()} // Prevent closing when clicking image
+              alt="Gallery"
+              className="max-w-full max-h-full object-contain rounded-xl"
+              onClick={(e) => e.stopPropagation()}
             />
           </motion.div>
         )}
       </AnimatePresence>
 
-      <div className="pt-32 pb-20 container mx-auto px-6 relative z-10">
-        
-        {/* Header */}
-        <div className="text-center mb-16">
-          <motion.h1 
+      <div className="pt-36 pb-24 container mx-auto px-6 relative">
+        <div className="max-w-4xl mb-12">
+          <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-4xl md:text-6xl font-bold text-white mb-6"
+            className="text-4xl md:text-7xl font-extrabold text-brand-ink tracking-tight leading-[1.0] mb-6"
           >
-            <Trans i18nKey="gallery.title" components={{ 1: <span className="text-gradient" /> }} />
+            <Trans i18nKey="gallery.title" components={{ 1: <span className="text-brand-primary" /> }} />
           </motion.h1>
-          <motion.p 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="text-brand-white/60 text-lg max-w-2xl mx-auto"
-          >
-            {t('gallery.subtitle')}
-          </motion.p>
+          <p className="text-brand-text text-lg max-w-2xl">{t('gallery.subtitle')}</p>
         </div>
 
-        {/* Filter Tabs */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="flex justify-center flex-wrap gap-4 mb-16"
-        >
+        {/* Filters — minimal underline tabs */}
+        <div className="flex flex-wrap gap-6 mb-12 border-b border-brand-border">
           {categories.map((cat) => (
             <button
               key={cat.id}
               onClick={() => setSelectedCategory(cat.id)}
-              className={`px-6 py-2 rounded-full border transition-all duration-300 ${
-                selectedCategory === cat.id
-                  ? 'bg-brand-primary border-brand-primary text-white shadow-lg shadow-brand-primary/25'
-                  : 'bg-transparent border-brand-white/10 text-brand-slate hover:border-brand-cyan/50 hover:text-brand-cyan'
+              className={`relative pb-4 text-sm font-medium transition-colors ${
+                selectedCategory === cat.id ? 'text-brand-ink' : 'text-brand-slate hover:text-brand-ink'
               }`}
             >
               {t(cat.label)}
+              {selectedCategory === cat.id && (
+                <span className="absolute -bottom-px left-0 right-0 h-0.5 bg-brand-ink" />
+              )}
             </button>
           ))}
-        </motion.div>
+        </div>
 
-        {/* Gallery Grid */}
-        <motion.div 
-          layout
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
-        >
+        {/* Grid */}
+        <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {filteredImages.map((img, index) => (
             <motion.div
               layout
-              initial={{ opacity: 0, scale: 0.9 }}
+              initial={{ opacity: 0, scale: 0.96 }}
               animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
+              exit={{ opacity: 0, scale: 0.96 }}
               transition={{ duration: 0.3 }}
-              key={index}
+              key={img.src + index}
               onClick={() => setSelectedImage(img.src)}
-              className="group relative rounded-2xl overflow-hidden aspect-video bg-brand-surface border border-brand-white/5 cursor-zoom-in"
+              className="group relative rounded-3xl overflow-hidden aspect-[4/3] bg-white/60 backdrop-blur-xl border border-white/70 shadow-glass cursor-zoom-in hover:-translate-y-1 hover:shadow-card transition-all duration-300"
             >
-              <div className="absolute inset-0 bg-brand-navy/20 group-hover:bg-transparent transition-colors duration-500 z-10" />
-              <img 
-                src={img.src} 
-                alt="Gallery Item" 
-                className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
+              <img
+                src={img.src}
+                alt="Gallery Item"
+                className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-brand-dark/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20 flex items-end p-6">
-                <span className="text-white font-medium capitalize">{img.category}</span>
+              <div className="absolute inset-x-0 bottom-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                <span className="text-xs font-semibold tracking-[0.14em] uppercase text-brand-ink bg-white/90 backdrop-blur px-3 py-1 rounded-full border border-brand-border">
+                  {t(`gallery.filters.${img.category}`)}
+                </span>
               </div>
             </motion.div>
           ))}
         </motion.div>
-
       </div>
     </div>
   );

@@ -1,50 +1,51 @@
 import { motion } from 'framer-motion';
 import { useTranslation, Trans } from 'react-i18next';
 import ProductCard from '../components/ProductCard';
+import { useProducts } from '../content/ProductsContext';
+import type { Lang } from '../content/detectLanguage';
 
 export default function Products() {
-  const { t } = useTranslation();
-  const productKeys = [
-    { key: 'selfSupporting', category: 'aerial', image: '/assets/product-self-supporting.png' },
-    { key: 'armoredDuct', category: 'underground', image: '/assets/product-armored-duct.png' },
-    { key: 'flatDrop', category: 'ftth', image: '/assets/product-flat-drop.png' },
-    { key: 'figure8', category: 'aerial', image: '/assets/product-figure8.png' },
-    { key: 'armoredSoil', category: 'directBurial', image: '/assets/product-armored-soil.png' },
-  ];
+  const { t, i18n } = useTranslation();
+  const { products } = useProducts();
+  const lang = (['en', 'ru', 'tkm'].includes(i18n.language) ? i18n.language : 'en') as Lang;
 
   return (
-    <div className="min-h-screen relative overflow-hidden bg-brand-dark">
-      {/* Background Ambience - Clean Technical Look */}
-      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-brand-cyan/5 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-brand-primary/5 rounded-full blur-[120px] pointer-events-none" />
-      
-      <div className="pt-32 pb-20 container mx-auto px-6 relative z-10">
-        <div className="text-center mb-16">
-          <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">
+    <div className="min-h-screen bg-brand-bg relative overflow-hidden">
+      <div className="absolute top-0 right-0 w-[480px] h-[480px] bg-brand-cyan/12 rounded-full blur-[150px] pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-[480px] h-[480px] bg-brand-primary/12 rounded-full blur-[150px] pointer-events-none" />
+      <div className="pt-36 pb-24 container mx-auto px-6 relative">
+        <div className="max-w-4xl mb-16">
+          <span className="eyebrow mb-6">{t('brand.tagline')}</span>
+          <h1 className="text-4xl md:text-7xl font-extrabold text-brand-ink tracking-tight leading-[1.0] mb-6">
             <Trans i18nKey="products.title" components={{ 1: <span className="text-gradient" /> }} />
           </h1>
-          <p className="text-brand-white/60 max-w-2xl mx-auto">
+          <p className="text-brand-text text-lg max-w-2xl">
             {t('products.subtitle')}
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {productKeys.map((item, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: index * 0.1 }}
-            >
-              <ProductCard 
-                title={t(`products.items.${item.key}.title`)}
-                description={t(`products.items.${item.key}.description`)}
-                category={t(`products.categories.${item.category}`)}
-                image={item.image}
-                specs={t(`products.items.${item.key}.specs`, { returnObjects: true }) as string[]}
-              />
-            </motion.div>
-          ))}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {products.map((p, index) => {
+            const text = p.t[lang] || p.t.en;
+            const category = t(`products.categories.${p.category}`, { defaultValue: p.category });
+            return (
+              <motion.div
+                key={p.id}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.06 }}
+              >
+                <ProductCard
+                  title={text.title}
+                  description={text.description}
+                  category={category || '—'}
+                  image={p.image}
+                  specs={text.specs}
+                />
+              </motion.div>
+            );
+          })}
         </div>
       </div>
     </div>

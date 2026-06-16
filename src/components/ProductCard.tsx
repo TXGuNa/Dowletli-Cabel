@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-
+import { ArrowUpRight, ImageOff } from 'lucide-react';
 
 interface ProductCardProps {
   title: string;
@@ -12,40 +12,44 @@ interface ProductCardProps {
 export default function ProductCard({ title, description, image, category, specs }: ProductCardProps) {
   return (
     <motion.div
-      whileHover={{ y: -5 }}
-      className="group relative bg-brand-surface border border-brand-white/10 rounded-lg overflow-hidden hover:border-brand-primary/50 transition-all duration-300 shadow-lg hover:shadow-brand-primary/10 h-full flex flex-col"
+      whileHover={{ y: -4 }}
+      transition={{ type: 'spring', stiffness: 300, damping: 24 }}
+      className="group relative glass rounded-3xl overflow-hidden hover:-translate-y-1 hover:shadow-card transition-all duration-300 h-full flex flex-col"
     >
-      {/* Image Area */}
-      <div className="relative aspect-[4/3] overflow-hidden bg-brand-navy shrink-0">
-        <div className="absolute inset-0 bg-gradient-to-t from-brand-surface to-transparent opacity-60 z-10" />
-        <img
-          src={image}
-          alt={title}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-80 group-hover:opacity-100"
-        />
-        <div className="absolute top-4 right-4 z-20">
-          <span className="bg-brand-navy/80 backdrop-blur-sm px-3 py-1 text-xs font-mono text-brand-cyan border border-brand-cyan/20 rounded">
-            {category.toUpperCase()}
-          </span>
-        </div>
+      {/* Image */}
+      <div className="relative aspect-[5/4] overflow-hidden bg-brand-soft shrink-0">
+        {image ? (
+          <img
+            src={image}
+            alt={title}
+            className="w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-500"
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center text-brand-slate">
+            <ImageOff size={28} strokeWidth={1.5} />
+          </div>
+        )}
+        <span className="absolute top-4 left-4 text-[11px] font-semibold tracking-[0.14em] uppercase text-brand-primary bg-white/80 backdrop-blur px-3 py-1 rounded-full border border-white/70 shadow-soft">
+          {category}
+        </span>
       </div>
 
-      {/* Content Area */}
+      {/* Content */}
       <div className="p-6 flex flex-col flex-grow">
-        <h3 className="text-xl font-bold text-white mb-2 group-hover:text-brand-primary transition-colors">{title}</h3>
-        <p className="text-brand-slate text-sm mb-4 line-clamp-3">{description}</p>
-        
-        {/* Specs List */}
-        <div className="space-y-2 mb-6 text-sm text-brand-slate font-mono mt-auto">
-          {specs.map((spec, i) => (
-             <div key={i} className="flex gap-2 items-start border-b border-brand-white/10 pb-1 last:border-0">
-               <span className="text-brand-primary shrink-0">•</span>
-               <span className="text-brand-silver">{spec}</span>
-             </div>
-          ))}
+        <div className="flex items-start justify-between gap-3 mb-2">
+          <h3 className="text-lg font-bold text-brand-ink">{title}</h3>
+          <ArrowUpRight size={18} className="text-brand-slate group-hover:text-brand-primary shrink-0 mt-1 transition-colors" />
         </div>
-        
+        <p className="text-brand-text text-sm mb-5 leading-relaxed line-clamp-3">{description}</p>
 
+        <ul className="mt-auto space-y-2 border-t border-white/60 pt-4">
+          {specs.map((spec, i) => (
+            <li key={i} className="flex gap-3 items-baseline text-sm text-brand-text">
+              <span className="text-brand-primary font-mono text-xs shrink-0">0{i + 1}</span>
+              <span>{spec}</span>
+            </li>
+          ))}
+        </ul>
       </div>
     </motion.div>
   );

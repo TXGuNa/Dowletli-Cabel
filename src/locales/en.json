@@ -21,7 +21,13 @@
     "highlight": "Speed of Light",
     "cta": "Explore Products",
     "book": "Book Consultation",
-    "subtitle": "Premium Optical Fiber Solutions manufactured in Mary, Turkmenistan."
+    "subtitle": "Premium Optical Fiber Solutions manufactured in Mary, Turkmenistan.",
+    "stat1num": "5",
+    "stat1label": "Cable Types",
+    "stat2num": "100%",
+    "stat2label": "Quality Tested",
+    "stat3num": "24/7",
+    "stat3label": "Production"
   },
   "home": {
     "manufacturing": {
@@ -36,6 +42,11 @@
         "title": "Located in Mary",
         "description": "Strategic logistics hub for Central Asia export"
       }
+    },
+    "cta": {
+      "title": "Ready to build a faster network?",
+      "subtitle": "Talk to our team about custom optical cable specifications and export logistics.",
+      "button": "Get in Touch"
     }
   },
   "features": {
@@ -67,10 +78,10 @@
         "title": "Self-Supporting Cable",
         "description": "Optical self-supporting cable for suspension on supports of communication lines, power transmission lines, and railways.",
         "specs": [
-           "Central optical module",
-           "Intra-modular hydrophobic filler",
-           "Peripheral strength element - aramid threads",
-           "Outer shell - light-stabilized polyethylene"
+          "Central optical module",
+          "Intra-modular hydrophobic filler",
+          "Peripheral strength element - aramid threads",
+          "Outer shell - light-stabilized polyethylene"
         ]
       },
       "armoredDuct": {
@@ -104,9 +115,9 @@
         "title": "Buried Armored Cable",
         "description": "Trunk optical cable for direct burial in soil of all categories, overpasses, and bridges.",
         "specs": [
-           "Armor - layer of galvanized steel wire",
-           "Intra-modular hydrophobic filler",
-           "Outer shell - light-stabilized polyethylene"
+          "Armor - layer of galvanized steel wire",
+          "Intra-modular hydrophobic filler",
+          "Outer shell - light-stabilized polyethylene"
         ]
       }
     }
@@ -136,7 +147,8 @@
       "message": "Message",
       "send": "Send Message",
       "sending": "Sending...",
-      "success": "Message Sent!"
+      "success": "Message Sent!",
+      "sent": "Thank you! We will get back to you shortly."
     },
     "info": {
       "address": "Turkmenistan, Mary velayat, 16th km of Mary - Ashgabat highway",
@@ -163,6 +175,24 @@
       "technical": "Technical Consultation",
       "sales": "Sales Inquiry",
       "tour": "Factory Tour"
+    },
+    "badge": "Schedule a Meeting",
+    "next": "Next",
+    "back": "Back",
+    "summary": "Summary",
+    "fullName": "Full Name",
+    "emailAddress": "Email Address",
+    "edit": "Edit",
+    "steps": {
+      "service": "Service",
+      "datetime": "Date & Time",
+      "details": "Details"
+    },
+    "benefits": {
+      "expertTitle": "Expert Guidance",
+      "expertDesc": "Direct access to our engineering team.",
+      "customTitle": "Custom Solutions",
+      "customDesc": "Tailored manufacturing specs for your project."
     }
   },
   "footer": {
@@ -172,5 +202,9 @@
     "careers": "Careers",
     "news": "News & Events",
     "rights": "All Rights Reserved."
+  },
+  "brand": {
+    "name": "DÖWLETLI CABEL",
+    "tagline": "Optical Fiber Cable"
   }
 }
