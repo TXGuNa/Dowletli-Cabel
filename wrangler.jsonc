@@ -1,9 +1,11 @@
 {
   // Cloudflare Workers — serve the built Vite SPA as static assets.
-  // Build command (set in the Cloudflare dashboard): npm run build
-  // Deploy command: npx wrangler deploy
+  // `build.command` runs `npm run build` before deploy so ./dist exists.
   "name": "dowletli",
   "compatibility_date": "2024-11-01",
+  "build": {
+    "command": "npm run build"
+  },
   "assets": {
     "directory": "./dist",
     "not_found_handling": "single-page-application"
