@@ -1,8 +1,10 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation, Trans } from 'react-i18next';
-import { ArrowUpRight, MapPin, Phone, Mail, Instagram, Linkedin, CheckCircle2, Clock } from 'lucide-react';
+import { ArrowUpRight, MapPin, Phone, Mail, CheckCircle2, Clock } from 'lucide-react';
 import { useState } from 'react';
 import { addSubmission } from '../content/submissionsStore';
+import { useSettings } from '../content/SettingsContext';
+import SocialIcon from '../components/SocialIcon';
 
 function Field({
   label, type, id, textarea,
@@ -30,6 +32,8 @@ function Field({
 
 export default function Contact() {
   const { t } = useTranslation();
+  const { settings } = useSettings();
+  const socials = settings.socials.filter((s) => s.url.trim());
   const [sent, setSent] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -89,14 +93,22 @@ export default function Contact() {
               </div>
             </div>
 
-            <div className="flex gap-2">
-              <a href="#" className="w-10 h-10 rounded-full border border-brand-border flex items-center justify-center text-brand-slate hover:bg-brand-ink hover:text-white hover:border-brand-ink transition-all">
-                <Instagram size={17} />
-              </a>
-              <a href="#" className="w-10 h-10 rounded-full border border-brand-border flex items-center justify-center text-brand-slate hover:bg-brand-ink hover:text-white hover:border-brand-ink transition-all">
-                <Linkedin size={17} />
-              </a>
-            </div>
+            {socials.length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                {socials.map((s) => (
+                  <a
+                    key={s.id}
+                    href={s.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    title={s.platform}
+                    className="w-10 h-10 rounded-full border border-brand-border flex items-center justify-center text-brand-slate hover:bg-brand-ink hover:text-white hover:border-brand-ink transition-all"
+                  >
+                    <SocialIcon platform={s.platform} size={17} />
+                  </a>
+                ))}
+              </div>
+            )}
           </motion.div>
 
           {/* Form */}

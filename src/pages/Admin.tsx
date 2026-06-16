@@ -23,7 +23,9 @@ import { type Product, makeEmptyProduct, defaultProducts } from '../content/prod
 import { useGallery } from '../content/GalleryContext';
 import { type GalleryImage, GALLERY_CATEGORIES, makeEmptyImage, defaultGallery } from '../content/galleryStore';
 import { useSettings } from '../content/SettingsContext';
-import { type SiteSettings } from '../content/settingsStore';
+import { type SiteSettings, makeSocialLink } from '../content/settingsStore';
+import SocialIcon from '../components/SocialIcon';
+import { SOCIAL_PLATFORMS } from '../content/socials';
 import { adminT, sectionLabel, fieldLabel, type AdminKey } from '../content/adminStrings';
 
 type Tr = (k: AdminKey) => string;
@@ -1109,6 +1111,64 @@ export default function Admin() {
                     className="w-full bg-brand-bg border border-brand-border rounded-xl px-4 py-2.5 text-brand-ink font-semibold focus:border-brand-ink focus:outline-none"
                   />
                   <p className="text-xs text-brand-slate mt-2">{tr('brandNameHint')}</p>
+                </section>
+
+                {/* Social links — single site-wide list */}
+                <section className="bg-white border border-brand-border rounded-2xl p-6 shadow-soft">
+                  <h3 className="text-lg font-bold text-brand-ink mb-1.5 flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-brand-primary" />
+                    {tr('socialLinks')}
+                  </h3>
+                  <p className="text-xs text-brand-slate mb-4">{tr('socialHint')}</p>
+
+                  <div className="space-y-2.5">
+                    {settingsDraft.socials.map((s) => (
+                      <div key={s.id} className="flex items-center gap-2">
+                        <span className="w-9 h-9 shrink-0 rounded-lg bg-brand-soft text-brand-ink flex items-center justify-center">
+                          <SocialIcon platform={s.platform} size={17} />
+                        </span>
+                        <select
+                          value={s.platform}
+                          onChange={(e) => setSettingsDraft({
+                            ...settingsDraft,
+                            socials: settingsDraft.socials.map((x) => (x.id === s.id ? { ...x, platform: e.target.value } : x)),
+                          })}
+                          className="shrink-0 bg-brand-bg border border-brand-border rounded-lg px-2.5 py-2 text-sm text-brand-ink focus:border-brand-ink focus:outline-none"
+                        >
+                          {SOCIAL_PLATFORMS.map((p) => (
+                            <option key={p.id} value={p.id}>{p.label}</option>
+                          ))}
+                        </select>
+                        <input
+                          value={s.url}
+                          placeholder={tr('socialUrlPlaceholder')}
+                          onChange={(e) => setSettingsDraft({
+                            ...settingsDraft,
+                            socials: settingsDraft.socials.map((x) => (x.id === s.id ? { ...x, url: e.target.value } : x)),
+                          })}
+                          className="flex-1 min-w-0 bg-brand-bg border border-brand-border rounded-lg px-3 py-2 text-sm text-brand-text focus:border-brand-ink focus:outline-none"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setSettingsDraft({
+                            ...settingsDraft,
+                            socials: settingsDraft.socials.filter((x) => x.id !== s.id),
+                          })}
+                          className="p-2 shrink-0 rounded-lg border border-brand-border text-brand-slate hover:text-red-500 hover:border-red-200 transition-colors"
+                        >
+                          <Trash2 size={15} />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => setSettingsDraft({ ...settingsDraft, socials: [...settingsDraft.socials, makeSocialLink()] })}
+                    className="inline-flex items-center gap-2 text-sm font-semibold text-brand-primary hover:underline mt-3"
+                  >
+                    <Plus size={15} /> {tr('addSocial')}
+                  </button>
                 </section>
 
                 {sections.map(([key, value]) => {

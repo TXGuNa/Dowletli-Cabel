@@ -25,7 +25,8 @@ export type AdminKey =
   | 'tabGallery' | 'galleryTitle' | 'gallerySubtitle' | 'addImage' | 'addFirstImage' | 'noImages'
   | 'galleryNote' | 'confirmDeleteImage' | 'confirmResetGallery' | 'photoCategory'
   | 'pageImages' | 'mainBanner' | 'aboutImage' | 'fromGallery' | 'remove' | 'noGalleryYet'
-  | 'brandName' | 'brandNameHint';
+  | 'brandName' | 'brandNameHint'
+  | 'socialLinks' | 'socialHint' | 'addSocial' | 'socialUrlPlaceholder';
 
 type Dict = Record<AdminKey, string>;
 
@@ -114,6 +115,10 @@ const en: Dict = {
   noGalleryYet: 'No gallery photos yet — add some below.',
   brandName: 'Brand name (header & footer)',
   brandNameHint: 'Shown at the top of every page. Same in all languages.',
+  socialLinks: 'Social links (Contact & footer)',
+  socialHint: 'Pick a platform and paste the link. Empty ones are hidden on the site.',
+  addSocial: 'Add social link',
+  socialUrlPlaceholder: 'https://… or wa.me/…',
 };
 
 const ru: Dict = {
@@ -201,6 +206,10 @@ const ru: Dict = {
   noGalleryYet: 'В галерее пока нет фото — добавьте ниже.',
   brandName: 'Название бренда (шапка и подвал)',
   brandNameHint: 'Показывается вверху каждой страницы. Одинаково на всех языках.',
+  socialLinks: 'Соцсети (Контакты и подвал)',
+  socialHint: 'Выберите платформу и вставьте ссылку. Пустые не показываются на сайте.',
+  addSocial: 'Добавить соцсеть',
+  socialUrlPlaceholder: 'https://… или wa.me/…',
 };
 
 const tkm: Dict = {
@@ -288,6 +297,10 @@ const tkm: Dict = {
   noGalleryYet: 'Galereýada heniz surat ýok — aşakdan goşuň.',
   brandName: 'Brend ady (ýokarky we aşaky bölüm)',
   brandNameHint: 'Her sahypanyň ýokarsynda görkezilýär. Ähli dillerde birmeňzeş.',
+  socialLinks: 'Sosial baglanyşyklar (Habarlaşmak we aşaky bölüm)',
+  socialHint: 'Platforma saýlaň we baglanyşygy goýuň. Boş bolanlar sahypada görkezilmeýär.',
+  addSocial: 'Sosial baglanyşyk goş',
+  socialUrlPlaceholder: 'https://… ýa-da wa.me/…',
 };
 
 const DICTS: Record<Lang, Dict> = { en, ru, tkm };

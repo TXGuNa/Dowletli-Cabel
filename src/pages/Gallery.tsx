@@ -25,8 +25,10 @@ export default function Gallery() {
     { id: 'events', label: 'gallery.filters.events' },
   ];
 
+  // Only show items that actually have an image (skip empty/placeholder slots).
+  const withImages = images.filter((img) => img.image);
   const filteredImages =
-    selectedCategory === 'all' ? images : images.filter((img) => img.category === selectedCategory);
+    selectedCategory === 'all' ? withImages : withImages.filter((img) => img.category === selectedCategory);
 
   return (
     <div className="min-h-screen bg-brand-bg relative overflow-hidden">
