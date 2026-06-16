@@ -21,7 +21,13 @@
     "highlight": "Yşyk Tizligi Bilen",
     "cta": "Önümleri Gör",
     "book": "Maslahat Almak",
-    "subtitle": "Türkmenistanyň Mary şäherinde öndürilen ýokary hilli optiki süýümli çözgütler."
+    "subtitle": "Türkmenistanyň Mary şäherinde öndürilen ýokary hilli optiki süýümli çözgütler.",
+    "stat1num": "5",
+    "stat1label": "Kabel görnüşi",
+    "stat2num": "100%",
+    "stat2label": "Hil barlagy",
+    "stat3num": "24/7",
+    "stat3label": "Önümçilik"
   },
   "home": {
     "manufacturing": {
@@ -36,6 +42,11 @@
         "title": "Ýerleşýän ýeri: Mary",
         "description": "Merkezi Aziýa eksporty üçin strategiki logistika merkezi"
       }
+    },
+    "cta": {
+      "title": "Has çalt ulgam gurmaga taýynmy?",
+      "subtitle": "Aýratyn optiki kabel aýratynlyklary we eksport logistikasy barada toparymyz bilen gürleşiň.",
+      "button": "Habarlaşmak"
     }
   },
   "features": {
@@ -67,10 +78,10 @@
         "title": "Öz-özüni göterýän kabel",
         "description": "Aragatnaşyk liniýalarynyň, elektrik geçiriji liniýalaryň we demir ýollaryň direglerine asmak üçin niýetlenen optiki öz-özüni göterýän kabel.",
         "specs": [
-           "Merkezi optiki modul",
-           "Modul içindäki gidrofob dolduryjy",
-           "Daşky güýçlendiriji element - aramid ýüpler",
-           "Daşky örtük - ýagtylyga durnukly polietilen"
+          "Merkezi optiki modul",
+          "Modul içindäki gidrofob dolduryjy",
+          "Daşky güýçlendiriji element - aramid ýüpler",
+          "Daşky örtük - ýagtylyga durnukly polietilen"
         ]
       },
       "armoredDuct": {
@@ -104,9 +115,9 @@
         "title": "Topraga gömlýän sowutlanan kabel",
         "description": "Ähli kategoriýadaky topraga, estakadalara we köprülere gömmek üçin niýetlenen magistral optiki kabel.",
         "specs": [
-           "Sowut - sinklenen polat sim gatlagy",
-           "Modul içindäki gidrofob dolduryjy",
-           "Daşky örtük - ýagtylyga durnukly polietilen"
+          "Sowut - sinklenen polat sim gatlagy",
+          "Modul içindäki gidrofob dolduryjy",
+          "Daşky örtük - ýagtylyga durnukly polietilen"
         ]
       }
     }
@@ -136,7 +147,8 @@
       "message": "Hatyňyz",
       "send": "Ugratmak",
       "sending": "Ugradylýar...",
-      "success": "Ugradyldy!"
+      "success": "Ugradyldy!",
+      "sent": "Sag boluň! Tiz wagtda siziň bilen habarlaşarys."
     },
     "info": {
       "address": "Türkmenistan, Mary welaýaty, Mary - Aşgabat ýolunyñ 16-njy kilometrligi",
@@ -163,6 +175,24 @@
       "technical": "Tehniki Maslahat",
       "sales": "Satuw Soraglary",
       "tour": "Zawoda Aýlanmak"
+    },
+    "badge": "Duşuşyk bellemek",
+    "next": "Indiki",
+    "back": "Yza",
+    "summary": "Jemi",
+    "fullName": "Doly ady",
+    "emailAddress": "E-poçta salgysy",
+    "edit": "Üýtgetmek",
+    "steps": {
+      "service": "Hyzmat",
+      "datetime": "Sene we wagt",
+      "details": "Maglumat"
+    },
+    "benefits": {
+      "expertTitle": "Hünärmen ýolbaşçylygy",
+      "expertDesc": "Inžener toparymyza göni elýeterlilik.",
+      "customTitle": "Aýratyn çözgütler",
+      "customDesc": "Taslamaňyz üçin niýetlenen önümçilik aýratynlyklary."
     }
   },
   "footer": {
@@ -172,5 +202,9 @@
     "careers": "Kariýera",
     "news": "Täzelikler",
     "rights": "Ähli hukuklar goralan."
+  },
+  "brand": {
+    "name": "DÖWLETLI CABEL",
+    "tagline": "Optiki süýümli kabel"
   }
 }

@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
-import { Globe } from 'lucide-react';
-import { useState } from 'react';
+import { ChevronDown } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
 
 const languages = [
   { code: 'en', label: 'English' },
@@ -11,6 +11,15 @@ const languages = [
 export default function LanguageSwitcher() {
   const { i18n } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const onClick = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setIsOpen(false);
+    };
+    document.addEventListener('mousedown', onClick);
+    return () => document.removeEventListener('mousedown', onClick);
+  }, []);
 
   const handleLanguageChange = (langCode: string) => {
     i18n.changeLanguage(langCode);
@@ -18,23 +27,23 @@ export default function LanguageSwitcher() {
   };
 
   return (
-    <div className="relative">
+    <div className="relative" ref={ref}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-white/10 transition-colors text-brand-white"
+        className="flex items-center gap-1 text-sm font-medium text-brand-slate hover:text-brand-ink transition-colors"
       >
-        <Globe size={20} />
-        <span className="uppercase">{i18n.language}</span>
+        <span className="uppercase">{i18n.language === 'tkm' ? 'TM' : i18n.language}</span>
+        <ChevronDown size={14} className={`transition-transform ${isOpen ? 'rotate-180' : ''}`} />
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-48 py-2 bg-brand-navy border border-brand-white/10 rounded-xl shadow-xl z-50 backdrop-blur-xl">
+        <div className="absolute right-0 mt-3 w-40 py-1.5 bg-white border border-brand-border rounded-xl shadow-card z-50">
           {languages.map((lang) => (
             <button
               key={lang.code}
               onClick={() => handleLanguageChange(lang.code)}
-              className={`block w-full text-left px-4 py-2 hover:bg-brand-cyan/20 transition-colors ${
-                i18n.language === lang.code ? 'text-brand-cyan' : 'text-brand-white'
+              className={`block w-full text-left px-4 py-2 text-sm hover:bg-brand-soft transition-colors ${
+                i18n.language === lang.code ? 'text-brand-ink font-semibold' : 'text-brand-slate'
               }`}
             >
               {lang.label}
