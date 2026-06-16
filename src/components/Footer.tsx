@@ -76,7 +76,7 @@ export default function Footer() {
         </div>
 
         <div className="border-t border-brand-border pt-6 flex flex-col sm:flex-row justify-between items-center gap-2 text-brand-slate text-sm">
-          <p>&copy; 2026 Döwletli. {t('footer.rights')}</p>
+          <p>&copy; 2026 {settings.brandName}. {t('footer.rights')}</p>
           <Link to="/admin" className="hover:text-brand-ink transition-colors">Admin</Link>
         </div>
       </div>
