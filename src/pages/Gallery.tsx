@@ -2,9 +2,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation, Trans } from 'react-i18next';
 import { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
+import { useGallery } from '../content/GalleryContext';
 
 export default function Gallery() {
   const { t } = useTranslation();
+  const { images } = useGallery();
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
@@ -21,15 +23,6 @@ export default function Gallery() {
     { id: 'factory', label: 'gallery.filters.factory' },
     { id: 'products', label: 'gallery.filters.products' },
     { id: 'events', label: 'gallery.filters.events' },
-  ];
-
-  const images = [
-    { src: '/assets/about-us-new.jpg', category: 'events' },
-    { src: '/assets/factory-interior-new.jpg', category: 'factory' },
-    { src: '/assets/product-self-supporting.png', category: 'products' },
-    { src: '/assets/product-armored-duct.png', category: 'products' },
-    { src: '/assets/hero-bg.png', category: 'factory' },
-    { src: '/assets/product-flat-drop.png', category: 'products' },
   ];
 
   const filteredImages =
@@ -107,12 +100,12 @@ export default function Gallery() {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.96 }}
               transition={{ duration: 0.3 }}
-              key={img.src + index}
-              onClick={() => setSelectedImage(img.src)}
+              key={img.id + index}
+              onClick={() => setSelectedImage(img.image)}
               className="group relative rounded-3xl overflow-hidden aspect-[4/3] bg-white/60 backdrop-blur-xl border border-white/70 shadow-glass cursor-zoom-in hover:-translate-y-1 hover:shadow-card transition-all duration-300"
             >
               <img
-                src={img.src}
+                src={img.image}
                 alt="Gallery Item"
                 className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
               />

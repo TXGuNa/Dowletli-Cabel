@@ -3,9 +3,11 @@ import { useTranslation } from 'react-i18next';
 import { Menu, X } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import LanguageSwitcher from './LanguageSwitcher';
+import { useSettings } from '../content/SettingsContext';
 
 export default function Header() {
   const { t } = useTranslation();
+  const { settings } = useSettings();
   const location = useLocation();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -40,7 +42,7 @@ export default function Header() {
         <Link to="/" className="flex items-center gap-2.5 group">
           <img src="/assets/logo.png" alt="Döwletli Logo" className="h-9 w-9 object-contain" />
           <span className="text-lg font-extrabold tracking-tight text-brand-ink">
-            {t('brand.name')}
+            {settings.brandName}
           </span>
         </Link>
 

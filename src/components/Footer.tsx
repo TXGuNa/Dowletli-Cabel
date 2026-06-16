@@ -1,9 +1,11 @@
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Instagram, Linkedin, Mail, MapPin, Phone, Youtube } from 'lucide-react';
+import { useSettings } from '../content/SettingsContext';
 
 export default function Footer() {
   const { t } = useTranslation();
+  const { settings } = useSettings();
 
   return (
     <footer className="bg-brand-bg border-t border-brand-border pt-16 pb-8">
@@ -14,7 +16,7 @@ export default function Footer() {
             <div className="flex items-center gap-2.5 mb-5">
               <img src="/assets/logo.png" alt="Döwletli Logo" className="h-9 w-9 object-contain" />
               <span className="text-lg font-extrabold tracking-tight text-brand-ink">
-                {t('brand.name')}
+                {settings.brandName}
               </span>
             </div>
             <p className="text-brand-text leading-relaxed mb-6 max-w-md">
