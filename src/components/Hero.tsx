@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { ArrowUpRight, Sparkles } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useSettings } from '../content/SettingsContext';
 
 function FiberLines() {
   // Decorative animated fiber-optic strands
@@ -44,6 +45,7 @@ function FiberLines() {
 
 export default function Hero() {
   const { t } = useTranslation();
+  const { settings } = useSettings();
 
   const stats = [
     { num: t('hero.stat1num'), label: t('hero.stat1label') },
@@ -120,7 +122,7 @@ export default function Hero() {
         >
           <div className="relative rounded-3xl overflow-hidden aspect-[16/10] md:aspect-[21/9]">
             <img
-              src="/assets/hero-bg.png"
+              src={settings.heroImage || '/assets/hero-bg.png'}
               alt="Fiber Optic Manufacturing"
               className="w-full h-full object-cover"
             />

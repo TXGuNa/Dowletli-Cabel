@@ -10,6 +10,8 @@ import Gallery from './pages/Gallery';
 import Admin from './pages/Admin';
 import { ContentProvider } from './content/ContentContext';
 import { ProductsProvider } from './content/ProductsContext';
+import { GalleryProvider } from './content/GalleryContext';
+import { SettingsProvider } from './content/SettingsContext';
 
 function Layout() {
   const location = useLocation();
@@ -38,9 +40,13 @@ function App() {
   return (
     <ContentProvider>
       <ProductsProvider>
-        <BrowserRouter>
-          <Layout />
-        </BrowserRouter>
+        <GalleryProvider>
+          <SettingsProvider>
+            <BrowserRouter>
+              <Layout />
+            </BrowserRouter>
+          </SettingsProvider>
+        </GalleryProvider>
       </ProductsProvider>
     </ContentProvider>
   );

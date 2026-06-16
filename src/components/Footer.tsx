@@ -1,9 +1,12 @@
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Instagram, Linkedin, Mail, MapPin, Phone, Youtube } from 'lucide-react';
+import { Mail, MapPin, Phone } from 'lucide-react';
+import { useSettings } from '../content/SettingsContext';
+import SocialIcon from './SocialIcon';
 
 export default function Footer() {
   const { t } = useTranslation();
+  const { settings } = useSettings();
 
   return (
     <footer className="bg-brand-bg border-t border-brand-border pt-16 pb-8">
@@ -14,23 +17,28 @@ export default function Footer() {
             <div className="flex items-center gap-2.5 mb-5">
               <img src="/assets/logo.png" alt="Döwletli Logo" className="h-9 w-9 object-contain" />
               <span className="text-lg font-extrabold tracking-tight text-brand-ink">
-                {t('brand.name')}
+                {settings.brandName}
               </span>
             </div>
             <p className="text-brand-text leading-relaxed mb-6 max-w-md">
               {t('about.mission')}
             </p>
-            <div className="flex gap-2">
-              {[Instagram, Linkedin, Youtube].map((Icon, i) => (
-                <a
-                  key={i}
-                  href="#"
-                  className="w-10 h-10 rounded-full border border-brand-border flex items-center justify-center text-brand-slate hover:bg-brand-ink hover:text-white hover:border-brand-ink transition-all"
-                >
-                  <Icon size={17} />
-                </a>
-              ))}
-            </div>
+            {settings.socials.filter((s) => s.url.trim()).length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                {settings.socials.filter((s) => s.url.trim()).map((s) => (
+                  <a
+                    key={s.id}
+                    href={s.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    title={s.platform}
+                    className="w-10 h-10 rounded-full border border-brand-border flex items-center justify-center text-brand-slate hover:bg-brand-ink hover:text-white hover:border-brand-ink transition-all"
+                  >
+                    <SocialIcon platform={s.platform} size={17} />
+                  </a>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Links */}

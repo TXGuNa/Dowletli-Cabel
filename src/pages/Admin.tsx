@@ -5,6 +5,7 @@ import {
   Lock, Save, RotateCcw, Download, Upload, LogOut, ExternalLink,
   Search, Plus, Trash2, Check, Inbox, FileText, Mail, CalendarClock, RefreshCw,
   Eye, EyeOff, MonitorSmartphone, Boxes, ImagePlus, X, Globe, ChevronDown,
+  Images, Image as ImageIcon, Upload as UploadIcon,
 } from 'lucide-react';
 import { useContentStore } from '../content/ContentContext';
 import {
@@ -18,10 +19,110 @@ import {
   loadSubmissions, markRead, deleteSubmission, clearSubmissions,
 } from '../content/submissionsStore';
 import { useProducts } from '../content/ProductsContext';
-import { type Product, makeEmptyProduct } from '../content/productsStore';
+import { type Product, makeEmptyProduct, defaultProducts } from '../content/productsStore';
+import { useGallery } from '../content/GalleryContext';
+import { type GalleryImage, GALLERY_CATEGORIES, makeEmptyImage, defaultGallery } from '../content/galleryStore';
+import { useSettings } from '../content/SettingsContext';
+import { type SiteSettings, makeSocialLink } from '../content/settingsStore';
+import SocialIcon from '../components/SocialIcon';
+import { SOCIAL_PLATFORMS } from '../content/socials';
 import { adminT, sectionLabel, fieldLabel, type AdminKey } from '../content/adminStrings';
 
 type Tr = (k: AdminKey) => string;
+
+// Read an uploaded image file as a data URL (with a soft size guard).
+function readImageFile(file: File | undefined, tooBigMsg: string, onOk: (dataUrl: string) => void) {
+  if (!file) return;
+  if (file.size > 2_000_000) {
+    alert(tooBigMsg);
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = () => onOk(String(reader.result));
+  reader.readAsDataURL(file);
+}
+
+// Reusable image picker: choose from the gallery OR upload a file.
+function ImagePicker({
+  value, onChange, gallery, tr, allowRemove,
+}: {
+  value: string;
+  onChange: (img: string) => void;
+  gallery: GalleryImage[];
+  tr: Tr;
+  allowRemove?: boolean;
+}) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div>
+      <div className="relative aspect-[5/4] rounded-xl overflow-hidden bg-brand-soft border border-brand-border flex items-center justify-center">
+        {value ? (
+          <img src={value} alt="" className="w-full h-full object-cover" />
+        ) : (
+          <ImagePlus size={26} className="text-brand-slate" strokeWidth={1.5} />
+        )}
+      </div>
+      <div className="flex flex-wrap gap-2 mt-2">
+        <label className="flex-1 min-w-[90px] cursor-pointer text-center text-xs font-semibold py-2 rounded-lg border border-brand-border text-brand-ink hover:bg-brand-soft transition-colors inline-flex items-center justify-center gap-1.5">
+          <UploadIcon size={13} /> {value ? tr('replace') : tr('upload')}
+          <input
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={(e) => readImageFile(e.target.files?.[0], tr('imageTooBig'), onChange)}
+          />
+        </label>
+        <button
+          type="button"
+          onClick={() => setOpen((o) => !o)}
+          className={`flex-1 min-w-[90px] text-center text-xs font-semibold py-2 rounded-lg border transition-colors inline-flex items-center justify-center gap-1.5 ${
+            open ? 'border-brand-primary/50 text-brand-primary bg-brand-soft' : 'border-brand-border text-brand-ink hover:bg-brand-soft'
+          }`}
+        >
+          <Images size={13} /> {tr('fromGallery')}
+        </button>
+        {allowRemove && value && (
+          <button
+            type="button"
+            onClick={() => onChange('')}
+            title={tr('remove')}
+            className="px-2.5 py-2 rounded-lg border border-brand-border text-brand-slate hover:text-red-500 hover:border-red-200 transition-colors"
+          >
+            <X size={14} />
+          </button>
+        )}
+      </div>
+
+      {open && (
+        <div className="mt-2 p-2 rounded-xl border border-brand-border bg-white max-h-52 overflow-y-auto">
+          {gallery.length === 0 ? (
+            <p className="text-xs text-brand-slate text-center py-4">{tr('noGalleryYet')}</p>
+          ) : (
+            <div className="grid grid-cols-3 gap-2">
+              {gallery.filter((g) => g.image).map((g) => (
+                <button
+                  key={g.id}
+                  type="button"
+                  onClick={() => { onChange(g.image); setOpen(false); }}
+                  className={`relative aspect-square rounded-lg overflow-hidden border-2 transition-colors ${
+                    value === g.image ? 'border-brand-primary' : 'border-transparent hover:border-brand-primary/40'
+                  }`}
+                >
+                  <img src={g.image} alt="" className="w-full h-full object-cover" />
+                  {value === g.image && (
+                    <span className="absolute top-1 right-1 bg-brand-primary text-white rounded-full p-0.5">
+                      <Check size={11} />
+                    </span>
+                  )}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
 
 const AUTH_KEY = 'dowletli_admin_ok';
 
@@ -402,8 +503,16 @@ function RequestsView({ serviceLabel, tr }: { serviceLabel: (id: string) => stri
 
 // ---- Products manager ------------------------------------------------------
 
-function ProductsManager({ lang, tr }: { lang: Lang; tr: Tr }) {
-  const { products, setProducts, resetProducts } = useProducts();
+function ProductsManager({
+  products, setProducts, gallery, lang, tr,
+}: {
+  products: Product[];
+  setProducts: (next: Product[]) => void;
+  gallery: GalleryImage[];
+  lang: Lang;
+  tr: Tr;
+}) {
+  const resetProducts = () => setProducts(defaultProducts());
 
   const patch = (id: string, p: Partial<Product>) =>
     setProducts(products.map((pr) => (pr.id === id ? { ...pr, ...p } : pr)));
@@ -422,17 +531,6 @@ function ProductsManager({ lang, tr }: { lang: Lang; tr: Tr }) {
     if (confirm(tr('confirmDeleteProduct'))) {
       setProducts(products.filter((pr) => pr.id !== id));
     }
-  };
-
-  const onPickImage = (id: string, file?: File) => {
-    if (!file) return;
-    if (file.size > 2_000_000) {
-      alert(tr('imageTooBig'));
-      return;
-    }
-    const reader = new FileReader();
-    reader.onload = () => patch(id, { image: String(reader.result) });
-    reader.readAsDataURL(file);
   };
 
   return (
@@ -476,35 +574,13 @@ function ProductsManager({ lang, tr }: { lang: Lang; tr: Tr }) {
             <div key={p.id} className="bg-white border border-brand-border rounded-2xl p-5 shadow-soft">
               <div className="grid md:grid-cols-[180px_1fr] gap-5">
                 {/* Image */}
-                <div>
-                  <div className="relative aspect-[5/4] rounded-xl overflow-hidden bg-brand-soft border border-brand-border flex items-center justify-center">
-                    {p.image ? (
-                      <img src={p.image} alt={text.title} className="w-full h-full object-cover" />
-                    ) : (
-                      <ImagePlus size={26} className="text-brand-slate" strokeWidth={1.5} />
-                    )}
-                  </div>
-                  <div className="flex gap-2 mt-2">
-                    <label className="flex-1 cursor-pointer text-center text-xs font-semibold py-2 rounded-lg border border-brand-border text-brand-ink hover:bg-brand-soft transition-colors">
-                      {p.image ? tr('replace') : tr('upload')}
-                      <input
-                        type="file"
-                        accept="image/*"
-                        className="hidden"
-                        onChange={(e) => onPickImage(p.id, e.target.files?.[0])}
-                      />
-                    </label>
-                    {p.image && (
-                      <button
-                        onClick={() => patch(p.id, { image: '' })}
-                        title="Remove image"
-                        className="px-2.5 py-2 rounded-lg border border-brand-border text-brand-slate hover:text-red-500 hover:border-red-200 transition-colors"
-                      >
-                        <X size={15} />
-                      </button>
-                    )}
-                  </div>
-                </div>
+                <ImagePicker
+                  value={p.image}
+                  onChange={(img) => patch(p.id, { image: img })}
+                  gallery={gallery}
+                  tr={tr}
+                  allowRemove
+                />
 
                 {/* Fields */}
                 <div className="space-y-4">
@@ -588,6 +664,128 @@ function ProductsManager({ lang, tr }: { lang: Lang; tr: Tr }) {
   );
 }
 
+// ---- Gallery manager -------------------------------------------------------
+
+function GalleryManager({
+  images, setImages, settings, setSettings, lang, tr,
+}: {
+  images: GalleryImage[];
+  setImages: (next: GalleryImage[]) => void;
+  settings: SiteSettings;
+  setSettings: (next: SiteSettings) => void;
+  lang: Lang;
+  tr: Tr;
+}) {
+  const resetImages = () => setImages(defaultGallery());
+  const setSetting = (key: keyof SiteSettings, val: string) => setSettings({ ...settings, [key]: val });
+
+  const patchImg = (id: string, p: Partial<GalleryImage>) =>
+    setImages(images.map((g) => (g.id === id ? { ...g, ...p } : g)));
+  const addImg = () => setImages([...images, makeEmptyImage()]);
+  const removeImg = (id: string) => {
+    if (confirm(tr('confirmDeleteImage'))) setImages(images.filter((g) => g.id !== id));
+  };
+
+  return (
+    <div>
+      <div className="flex items-center justify-between gap-4 mb-6">
+        <div>
+          <h1 className="text-2xl font-extrabold text-brand-ink">{tr('galleryTitle')}</h1>
+          <p className="text-brand-slate text-sm mt-1">{tr('gallerySubtitle')}</p>
+        </div>
+        <div className="flex gap-2 shrink-0">
+          <button
+            onClick={() => { if (confirm(tr('confirmResetGallery'))) resetImages(); }}
+            className="btn-ghost !px-3.5 !py-2 text-sm"
+          >
+            <RotateCcw size={16} /> {tr('reset')}
+          </button>
+          <button onClick={addImg} className="btn-primary !px-4 !py-2 text-sm">
+            <Plus size={16} /> {tr('addImage')}
+          </button>
+        </div>
+      </div>
+
+      {/* Page images — pick from gallery or upload */}
+      <div className="bg-white border border-brand-border rounded-2xl p-5 shadow-soft mb-6">
+        <h3 className="text-sm font-bold text-brand-ink mb-4 flex items-center gap-2">
+          <ImageIcon size={16} className="text-brand-primary" /> {tr('pageImages')}
+        </h3>
+        <div className="grid sm:grid-cols-2 gap-5 max-w-xl">
+          <div>
+            <label className="block text-sm font-semibold text-brand-ink mb-2">{tr('mainBanner')}</label>
+            <ImagePicker value={settings.heroImage} onChange={(img) => setSetting('heroImage', img)} gallery={images} tr={tr} />
+          </div>
+          <div>
+            <label className="block text-sm font-semibold text-brand-ink mb-2">{tr('aboutImage')}</label>
+            <ImagePicker value={settings.aboutImage} onChange={(img) => setSetting('aboutImage', img)} gallery={images} tr={tr} />
+          </div>
+        </div>
+      </div>
+
+      {/* Gallery grid */}
+      {images.length === 0 ? (
+        <div className="text-center py-16 border border-dashed border-brand-border rounded-2xl">
+          <Images size={36} className="mx-auto text-brand-slate mb-4" strokeWidth={1.4} />
+          <p className="text-brand-ink font-semibold">{tr('noImages')}</p>
+          <button onClick={addImg} className="btn-primary !px-4 !py-2 text-sm mt-4">
+            <Plus size={16} /> {tr('addFirstImage')}
+          </button>
+        </div>
+      ) : (
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {images.map((g) => (
+            <div key={g.id} className="bg-white border border-brand-border rounded-2xl p-3 shadow-soft">
+              <div className="relative aspect-[4/3] rounded-xl overflow-hidden bg-brand-soft border border-brand-border flex items-center justify-center">
+                {g.image ? (
+                  <img src={g.image} alt="" className="w-full h-full object-cover" />
+                ) : (
+                  <ImagePlus size={24} className="text-brand-slate" strokeWidth={1.5} />
+                )}
+                <button
+                  onClick={() => removeImg(g.id)}
+                  title={tr('remove')}
+                  className="absolute top-2 right-2 bg-white/90 backdrop-blur text-brand-slate hover:text-red-500 rounded-lg p-1.5 border border-brand-border"
+                >
+                  <Trash2 size={14} />
+                </button>
+              </div>
+
+              <label className="block w-full cursor-pointer text-center text-xs font-semibold py-2 mt-2 rounded-lg border border-brand-border text-brand-ink hover:bg-brand-soft transition-colors">
+                {g.image ? tr('replace') : tr('upload')}
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => readImageFile(e.target.files?.[0], tr('imageTooBig'), (d) => patchImg(g.id, { image: d }))}
+                />
+              </label>
+
+              <div className="flex flex-wrap gap-1.5 mt-2">
+                {GALLERY_CATEGORIES.map((c) => (
+                  <button
+                    key={c}
+                    onClick={() => patchImg(g.id, { category: c })}
+                    className={`text-xs font-medium px-2.5 py-1 rounded-full border transition-colors ${
+                      g.category === c
+                        ? 'bg-brand-ink text-white border-brand-ink'
+                        : 'bg-white text-brand-slate border-brand-border hover:border-brand-primary/40'
+                    }`}
+                  >
+                    {fieldLabel(c, lang)}
+                  </button>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      <p className="text-center text-xs text-brand-slate mt-8 max-w-xl mx-auto">{tr('galleryNote')}</p>
+    </div>
+  );
+}
+
 // ---- Language dropdown -----------------------------------------------------
 
 function AdminLangSelect({ value, onChange }: { value: Lang; onChange: (l: Lang) => void }) {
@@ -647,10 +845,17 @@ function AdminLangSelect({ value, onChange }: { value: Lang; onChange: (l: Lang)
 
 export default function Admin() {
   const navigate = useNavigate();
-  const { content, saveContent, resetContent } = useContentStore();
+  const { content, saveContent, defaults: contentDefaults } = useContentStore();
+  const { products, setProducts: applyProducts } = useProducts();
+  const { images, setImages: applyImages } = useGallery();
+  const { settings, setSettings: applySettings } = useSettings();
+
   const [authed, setAuthed] = useState(() => sessionStorage.getItem(AUTH_KEY) === '1');
-  const [view, setView] = useState<'content' | 'products' | 'requests'>('content');
+  const [view, setView] = useState<'content' | 'products' | 'gallery' | 'requests'>('content');
   const [draft, setDraft] = useState<AllContent>(() => clone(content));
+  const [productsDraft, setProductsDraft] = useState<Product[]>(() => clone(products));
+  const [galleryDraft, setGalleryDraft] = useState<GalleryImage[]>(() => clone(images));
+  const [settingsDraft, setSettingsDraft] = useState<SiteSettings>(() => clone(settings));
   const [lang, setLang] = useState<Lang>('en');
   const [query, setQuery] = useState('');
   const [savedFlash, setSavedFlash] = useState(false);
@@ -660,20 +865,15 @@ export default function Admin() {
   const submissions = useSubmissions();
   const unread = submissions.filter((s) => !s.read).length;
 
+  // Nothing is applied to the live site until Save is pressed.
   const dirty = useMemo(
-    () => JSON.stringify(draft) !== JSON.stringify(content),
-    [draft, content],
+    () =>
+      JSON.stringify(draft) !== JSON.stringify(content) ||
+      JSON.stringify(productsDraft) !== JSON.stringify(products) ||
+      JSON.stringify(galleryDraft) !== JSON.stringify(images) ||
+      JSON.stringify(settingsDraft) !== JSON.stringify(settings),
+    [draft, content, productsDraft, products, galleryDraft, images, settingsDraft, settings],
   );
-
-  // Auto-apply edits so the live preview & site update without pressing Save.
-  useEffect(() => {
-    if (!dirty) return;
-    const id = setTimeout(() => {
-      saveContent(JSON.parse(JSON.stringify(draft)));
-      setPreviewKey((k) => k + 1);
-    }, 600);
-    return () => clearTimeout(id);
-  }, [draft, dirty, saveContent]);
 
   const serviceLabel = (id: string): string => {
     const booking = content.en?.booking as unknown as { services?: Record<string, string> } | undefined;
@@ -690,6 +890,9 @@ export default function Admin() {
 
   const handleSave = () => {
     saveContent(clone(draft));
+    applyProducts(clone(productsDraft));
+    applyImages(clone(galleryDraft));
+    applySettings(clone(settingsDraft));
     setSavedFlash(true);
     setPreviewKey((k) => k + 1); // refresh live preview
     setTimeout(() => setSavedFlash(false), 2000);
@@ -697,8 +900,7 @@ export default function Admin() {
 
   const handleReset = () => {
     if (!confirm(tr('confirmResetContent'))) return;
-    const defaults = resetContent();
-    setDraft(clone(defaults));
+    setDraft(clone(contentDefaults)); // applied on Save
   };
 
   const handleExport = () => {
@@ -770,6 +972,14 @@ export default function Admin() {
               <Boxes size={16} /> {tr('tabProducts')}
             </button>
             <button
+              onClick={() => setView('gallery')}
+              className={`px-4 py-2 rounded-lg text-sm font-semibold flex items-center gap-2 transition-colors ${
+                view === 'gallery' ? 'bg-white text-brand-ink shadow-soft' : 'text-brand-slate hover:text-brand-ink'
+              }`}
+            >
+              <Images size={16} /> {tr('tabGallery')}
+            </button>
+            <button
               onClick={() => setView('requests')}
               className={`px-4 py-2 rounded-lg text-sm font-semibold flex items-center gap-2 transition-colors ${
                 view === 'requests' ? 'bg-white text-brand-ink shadow-soft' : 'text-brand-slate hover:text-brand-ink'
@@ -792,7 +1002,7 @@ export default function Admin() {
             <button onClick={logout} className="btn-ghost !px-3.5 !py-2 text-sm">
               <LogOut size={16} /> <span className="hidden md:inline">{tr('logout')}</span>
             </button>
-            {view === 'content' && (
+            {view !== 'requests' && (
               <button
                 onClick={handleSave}
                 disabled={!dirty}
@@ -819,7 +1029,22 @@ export default function Admin() {
             </p>
           </div>
         ) : view === 'products' ? (
-          <ProductsManager lang={lang} tr={tr} />
+          <ProductsManager
+            products={productsDraft}
+            setProducts={setProductsDraft}
+            gallery={galleryDraft}
+            lang={lang}
+            tr={tr}
+          />
+        ) : view === 'gallery' ? (
+          <GalleryManager
+            images={galleryDraft}
+            setImages={setGalleryDraft}
+            settings={settingsDraft}
+            setSettings={setSettingsDraft}
+            lang={lang}
+            tr={tr}
+          />
         ) : (
           <>
             {/* How-to banner */}
@@ -866,20 +1091,98 @@ export default function Admin() {
             </div>
 
             {dirty && (
-              <div className="mb-5 flex items-center gap-2 text-sm font-medium text-brand-primary bg-brand-soft border border-brand-primary/20 px-4 py-2.5 rounded-xl">
-                <RefreshCw size={15} className="animate-spin" /> {tr('applying')}
+              <div className="mb-5 flex items-center gap-2 text-sm font-medium text-amber-700 bg-amber-50 border border-amber-200 px-4 py-2.5 rounded-xl">
+                <RefreshCw size={15} /> {tr('applying')}
               </div>
             )}
 
             <div className={showPreview ? 'grid lg:grid-cols-2 gap-6 items-start' : ''}>
               {/* Editor */}
               <div className="grid gap-5">
+                {/* Brand name — single site-wide value (not per language) */}
+                <section className="bg-white border border-brand-border rounded-2xl p-6 shadow-soft">
+                  <label className="block text-lg font-bold text-brand-ink mb-1.5 flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-brand-primary" />
+                    {tr('brandName')}
+                  </label>
+                  <input
+                    value={settingsDraft.brandName}
+                    onChange={(e) => setSettingsDraft({ ...settingsDraft, brandName: e.target.value })}
+                    className="w-full bg-brand-bg border border-brand-border rounded-xl px-4 py-2.5 text-brand-ink font-semibold focus:border-brand-ink focus:outline-none"
+                  />
+                  <p className="text-xs text-brand-slate mt-2">{tr('brandNameHint')}</p>
+                </section>
+
+                {/* Social links — single site-wide list */}
+                <section className="bg-white border border-brand-border rounded-2xl p-6 shadow-soft">
+                  <h3 className="text-lg font-bold text-brand-ink mb-1.5 flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-brand-primary" />
+                    {tr('socialLinks')}
+                  </h3>
+                  <p className="text-xs text-brand-slate mb-4">{tr('socialHint')}</p>
+
+                  <div className="space-y-2.5">
+                    {settingsDraft.socials.map((s) => (
+                      <div key={s.id} className="flex items-center gap-2">
+                        <span className="w-9 h-9 shrink-0 rounded-lg bg-brand-soft text-brand-ink flex items-center justify-center">
+                          <SocialIcon platform={s.platform} size={17} />
+                        </span>
+                        <select
+                          value={s.platform}
+                          onChange={(e) => setSettingsDraft({
+                            ...settingsDraft,
+                            socials: settingsDraft.socials.map((x) => (x.id === s.id ? { ...x, platform: e.target.value } : x)),
+                          })}
+                          className="shrink-0 bg-brand-bg border border-brand-border rounded-lg px-2.5 py-2 text-sm text-brand-ink focus:border-brand-ink focus:outline-none"
+                        >
+                          {SOCIAL_PLATFORMS.map((p) => (
+                            <option key={p.id} value={p.id}>{p.label}</option>
+                          ))}
+                        </select>
+                        <input
+                          value={s.url}
+                          placeholder={tr('socialUrlPlaceholder')}
+                          onChange={(e) => setSettingsDraft({
+                            ...settingsDraft,
+                            socials: settingsDraft.socials.map((x) => (x.id === s.id ? { ...x, url: e.target.value } : x)),
+                          })}
+                          className="flex-1 min-w-0 bg-brand-bg border border-brand-border rounded-lg px-3 py-2 text-sm text-brand-text focus:border-brand-ink focus:outline-none"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setSettingsDraft({
+                            ...settingsDraft,
+                            socials: settingsDraft.socials.filter((x) => x.id !== s.id),
+                          })}
+                          className="p-2 shrink-0 rounded-lg border border-brand-border text-brand-slate hover:text-red-500 hover:border-red-200 transition-colors"
+                        >
+                          <Trash2 size={15} />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => setSettingsDraft({ ...settingsDraft, socials: [...settingsDraft.socials, makeSocialLink()] })}
+                    className="inline-flex items-center gap-2 text-sm font-semibold text-brand-primary hover:underline mt-3"
+                  >
+                    <Plus size={15} /> {tr('addSocial')}
+                  </button>
+                </section>
+
                 {sections.map(([key, value]) => {
                   // Product items (with images) are managed in the Products tab.
+                  // Brand name is edited above (single site-wide value).
                   let v = value;
                   if (key === 'products' && value && typeof value === 'object' && !Array.isArray(value)) {
                     const copy = { ...(value as Record<string, Json>) };
                     delete copy.items;
+                    v = copy;
+                  }
+                  if (key === 'brand' && value && typeof value === 'object' && !Array.isArray(value)) {
+                    const copy = { ...(value as Record<string, Json>) };
+                    delete copy.name;
                     v = copy;
                   }
                   return (

@@ -1,8 +1,10 @@
 import { motion } from 'framer-motion';
 import { useTranslation, Trans } from 'react-i18next';
+import { useSettings } from '../content/SettingsContext';
 
 export default function About() {
   const { t } = useTranslation();
+  const { settings } = useSettings();
 
   return (
     <div className="pt-36 pb-24 min-h-screen bg-brand-bg relative overflow-hidden">
@@ -58,8 +60,8 @@ export default function About() {
             >
               <div className="relative aspect-[4/3] rounded-3xl overflow-hidden">
                 <img
-                  src="/assets/about-us-new.jpg"
-                  alt="Döwletli Trade Show Booth"
+                  src={settings.aboutImage || '/assets/about-us-new.jpg'}
+                  alt="Döwletli"
                   className="w-full h-full object-cover"
                 />
               </div>
