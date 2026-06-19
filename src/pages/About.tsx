@@ -7,7 +7,7 @@ export default function About() {
   const { settings } = useSettings();
 
   return (
-    <div className="pt-36 pb-24 min-h-screen bg-brand-bg relative overflow-hidden">
+    <div className="pt-28 sm:pt-36 pb-20 sm:pb-24 min-h-screen bg-brand-bg relative overflow-hidden">
       <div className="absolute top-0 left-1/3 w-[480px] h-[480px] bg-brand-cyan/12 rounded-full blur-[150px] pointer-events-none" />
       <div className="absolute bottom-1/4 right-0 w-[460px] h-[460px] bg-brand-primary/12 rounded-full blur-[150px] pointer-events-none" />
       <div className="container mx-auto px-6 relative">

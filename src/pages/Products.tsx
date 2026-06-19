@@ -13,8 +13,8 @@ export default function Products() {
     <div className="min-h-screen bg-brand-bg relative overflow-hidden">
       <div className="absolute top-0 right-0 w-[480px] h-[480px] bg-brand-cyan/12 rounded-full blur-[150px] pointer-events-none" />
       <div className="absolute bottom-0 left-0 w-[480px] h-[480px] bg-brand-primary/12 rounded-full blur-[150px] pointer-events-none" />
-      <div className="pt-36 pb-24 container mx-auto px-6 relative">
-        <div className="max-w-4xl mb-16">
+      <div className="pt-28 sm:pt-36 pb-20 sm:pb-24 container mx-auto px-6 relative">
+        <div className="max-w-4xl mb-12 sm:mb-16">
           <span className="eyebrow mb-6">{t('brand.tagline')}</span>
           <h1 className="text-4xl md:text-7xl font-extrabold text-brand-ink tracking-tight leading-[1.0] mb-6">
             <Trans i18nKey="products.title" components={{ 1: <span className="text-gradient" /> }} />

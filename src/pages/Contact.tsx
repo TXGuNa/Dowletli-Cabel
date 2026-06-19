@@ -52,8 +52,8 @@ export default function Contact() {
     <div className="min-h-screen bg-brand-bg relative overflow-hidden">
       <div className="absolute top-10 right-0 w-[460px] h-[460px] bg-brand-cyan/12 rounded-full blur-[140px] pointer-events-none" />
       <div className="absolute bottom-0 left-0 w-[460px] h-[460px] bg-brand-primary/12 rounded-full blur-[140px] pointer-events-none" />
-      <div className="pt-36 pb-24 container mx-auto px-6 relative">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-start">
+      <div className="pt-28 sm:pt-36 pb-20 sm:pb-24 container mx-auto px-6 relative">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 sm:gap-16 lg:gap-24 items-start">
           {/* Info */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}

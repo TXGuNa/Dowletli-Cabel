@@ -4,10 +4,63 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/png" href="/assets/logo.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#F3F7FF" />
     <title>DÖWLETLI | Optic Cable</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+    />
+
+    <style>
+      /* Paint the brand background immediately so the first frame is never white */
+      html, body { margin: 0; background: #F3F7FF; }
+
+      /* Boot splash shown until React mounts and replaces #root */
+      #app-splash {
+        position: fixed;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 18px;
+        background: #F3F7FF;
+        z-index: 9999;
+      }
+      #app-splash img {
+        width: 56px;
+        height: 56px;
+        object-fit: contain;
+        animation: splash-pulse 1.4s ease-in-out infinite;
+      }
+      #app-splash .ring {
+        width: 30px;
+        height: 30px;
+        border-radius: 9999px;
+        border: 3px solid rgba(37, 99, 235, 0.18);
+        border-top-color: #2563EB;
+        animation: splash-spin 0.8s linear infinite;
+      }
+      @keyframes splash-spin { to { transform: rotate(360deg); } }
+      @keyframes splash-pulse {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.55; transform: scale(0.94); }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        #app-splash img, #app-splash .ring { animation: none; }
+      }
+    </style>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <div id="app-splash">
+        <img src="/assets/logo.png" alt="Döwletli" />
+        <div class="ring"></div>
+      </div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

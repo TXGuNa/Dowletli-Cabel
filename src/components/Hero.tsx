@@ -64,7 +64,7 @@ export default function Hero() {
         <div className="absolute top-0 left-0 right-0 h-[360px]"><FiberLines /></div>
       </div>
 
-      <div className="container mx-auto px-6 pt-36 pb-20 relative z-10">
+      <div className="container mx-auto px-6 pt-28 sm:pt-36 pb-16 sm:pb-20 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
@@ -131,11 +131,11 @@ export default function Hero() {
         </motion.div>
 
         {/* Glass stats */}
-        <div className="mt-12 grid grid-cols-3 gap-4">
+        <div className="mt-12 grid grid-cols-3 gap-2.5 sm:gap-4">
           {stats.map((s, i) => (
-            <div key={i} className="glass rounded-2xl px-5 py-6 text-center">
-              <div className="text-3xl md:text-5xl font-extrabold text-brand-ink tracking-tight">{s.num}</div>
-              <div className="text-sm text-brand-slate mt-2">{s.label}</div>
+            <div key={i} className="glass rounded-2xl px-2 py-5 sm:px-5 sm:py-6 text-center">
+              <div className="text-2xl sm:text-3xl md:text-5xl font-extrabold text-brand-ink tracking-tight">{s.num}</div>
+              <div className="text-xs sm:text-sm text-brand-slate mt-1.5 sm:mt-2 leading-tight">{s.label}</div>
             </div>
           ))}
         </div>
