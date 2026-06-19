@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import Header from './components/Header';
 import Footer from './components/Footer';
@@ -7,7 +8,9 @@ import Products from './pages/Products';
 import Contact from './pages/Contact';
 import BookConsultation from './pages/BookConsultation';
 import Gallery from './pages/Gallery';
-import Admin from './pages/Admin';
+// Admin is heavy and admin-only — load it on demand so public visitors
+// don't download it (smaller first paint, less initial white screen).
+const Admin = lazy(() => import('./pages/Admin'));
 import { ContentProvider } from './content/ContentContext';
 import { ProductsProvider } from './content/ProductsContext';
 import { GalleryProvider } from './content/GalleryContext';
@@ -28,7 +31,14 @@ function Layout() {
           <Route path="/gallery" element={<Gallery />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/book" element={<BookConsultation />} />
-          <Route path="/admin" element={<Admin />} />
+          <Route
+            path="/admin"
+            element={
+              <Suspense fallback={<div className="min-h-screen bg-brand-bg" />}>
+                <Admin />
+              </Suspense>
+            }
+          />
         </Routes>
       </main>
       {!isAdmin && <Footer />}

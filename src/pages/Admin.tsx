@@ -126,6 +126,9 @@ function ImagePicker({
 
 const AUTH_KEY = 'dowletli_admin_ok';
 
+// Compact language codes for tight mobile UI (full names used on desktop & in lists).
+const SHORT_LANG: Record<Lang, string> = { en: 'EN', ru: 'RU', tkm: 'TM' };
+
 function clone<T>(v: T): T {
   return JSON.parse(JSON.stringify(v));
 }
@@ -535,7 +538,7 @@ function ProductsManager({
 
   return (
     <div>
-      <div className="flex items-center justify-between gap-4 mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
           <h1 className="text-2xl font-extrabold text-brand-ink">{tr('productsTitle')}</h1>
           <p className="text-brand-slate text-sm mt-1">
@@ -688,7 +691,7 @@ function GalleryManager({
 
   return (
     <div>
-      <div className="flex items-center justify-between gap-4 mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
           <h1 className="text-2xl font-extrabold text-brand-ink">{tr('galleryTitle')}</h1>
           <p className="text-brand-slate text-sm mt-1">{tr('gallerySubtitle')}</p>
@@ -814,8 +817,9 @@ function AdminLangSelect({ value, onChange }: { value: Lang; onChange: (l: Lang)
           open ? 'border-brand-primary/50 shadow-soft' : 'border-brand-border hover:border-brand-primary/40'
         }`}
       >
-        <Globe size={16} className="text-brand-primary" />
-        <span>{LANG_LABELS[value]}</span>
+        <Globe size={16} className="text-brand-primary shrink-0" />
+        <span className="sm:hidden">{SHORT_LANG[value]}</span>
+        <span className="hidden sm:inline">{LANG_LABELS[value]}</span>
         <ChevronDown size={15} className={`text-brand-slate transition-transform ${open ? 'rotate-180' : ''}`} />
       </button>
 
@@ -944,8 +948,8 @@ export default function Admin() {
     <div className="min-h-screen bg-brand-bg">
       {/* Top bar */}
       <header className="sticky top-0 z-40 bg-white/85 backdrop-blur-lg border-b border-brand-border">
-        <div className="container mx-auto px-6 py-3 flex items-center gap-4 flex-wrap">
-          <div className="flex items-center gap-3 mr-2">
+        <div className="container mx-auto px-4 sm:px-6 py-3 flex items-center gap-2 sm:gap-4 flex-wrap">
+          <div className="flex items-center gap-3 mr-1 sm:mr-2">
             <img src="/assets/logo.png" alt="logo" className="h-9 w-9 object-contain" />
             <div className="hidden sm:block">
               <div className="font-extrabold text-brand-ink leading-tight">{tr('adminTitle')}</div>
@@ -953,66 +957,66 @@ export default function Admin() {
             </div>
           </div>
 
-          {/* View tabs */}
-          <nav className="flex gap-1 bg-brand-soft rounded-xl p-1">
-            <button
-              onClick={() => setView('content')}
-              className={`px-4 py-2 rounded-lg text-sm font-semibold flex items-center gap-2 transition-colors ${
-                view === 'content' ? 'bg-white text-brand-ink shadow-soft' : 'text-brand-slate hover:text-brand-ink'
-              }`}
-            >
-              <FileText size={16} /> {tr('tabContent')}
-            </button>
-            <button
-              onClick={() => setView('products')}
-              className={`px-4 py-2 rounded-lg text-sm font-semibold flex items-center gap-2 transition-colors ${
-                view === 'products' ? 'bg-white text-brand-ink shadow-soft' : 'text-brand-slate hover:text-brand-ink'
-              }`}
-            >
-              <Boxes size={16} /> {tr('tabProducts')}
-            </button>
-            <button
-              onClick={() => setView('gallery')}
-              className={`px-4 py-2 rounded-lg text-sm font-semibold flex items-center gap-2 transition-colors ${
-                view === 'gallery' ? 'bg-white text-brand-ink shadow-soft' : 'text-brand-slate hover:text-brand-ink'
-              }`}
-            >
-              <Images size={16} /> {tr('tabGallery')}
-            </button>
-            <button
-              onClick={() => setView('requests')}
-              className={`px-4 py-2 rounded-lg text-sm font-semibold flex items-center gap-2 transition-colors ${
-                view === 'requests' ? 'bg-white text-brand-ink shadow-soft' : 'text-brand-slate hover:text-brand-ink'
-              }`}
-            >
-              <Inbox size={16} /> {tr('tabRequests')}
-              {unread > 0 && (
-                <span className="text-xs px-1.5 py-0.5 rounded-full bg-brand-primary text-white">{unread}</span>
-              )}
-            </button>
-          </nav>
-
-          {/* Language dropdown — used by Content & Products */}
-          {view !== 'requests' && <AdminLangSelect value={lang} onChange={setLang} />}
-
-          <div className="flex items-center gap-2 ml-auto">
-            <Link to="/" target="_blank" className="btn-ghost !px-3.5 !py-2 text-sm">
+          {/* Right controls — stay on the first row on mobile, tabs drop below */}
+          <div className="flex items-center gap-2 ml-auto order-2 sm:order-3">
+            {/* Language dropdown — used by Content, Products & Gallery */}
+            {view !== 'requests' && <AdminLangSelect value={lang} onChange={setLang} />}
+            <Link to="/" target="_blank" className="btn-ghost !px-3 sm:!px-3.5 !py-2 text-sm">
               <ExternalLink size={16} /> <span className="hidden md:inline">{tr('viewSite')}</span>
             </Link>
-            <button onClick={logout} className="btn-ghost !px-3.5 !py-2 text-sm">
+            <button onClick={logout} className="btn-ghost !px-3 sm:!px-3.5 !py-2 text-sm">
               <LogOut size={16} /> <span className="hidden md:inline">{tr('logout')}</span>
             </button>
             {view !== 'requests' && (
               <button
                 onClick={handleSave}
                 disabled={!dirty}
-                className="btn-primary !px-5 !py-2 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                className="btn-primary !px-4 sm:!px-5 !py-2 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {savedFlash ? <Check size={16} /> : <Save size={16} />}
-                {savedFlash ? tr('saved') : tr('save')}
+                <span className="hidden sm:inline">{savedFlash ? tr('saved') : tr('save')}</span>
               </button>
             )}
           </div>
+
+          {/* View tabs — full-width scrollable row on mobile, inline on desktop */}
+          <nav className="order-3 sm:order-2 w-full sm:w-auto flex gap-1 bg-brand-soft rounded-xl p-1 overflow-x-auto no-scrollbar">
+            <button
+              onClick={() => setView('content')}
+              className={`flex-1 sm:flex-none justify-center whitespace-nowrap px-2.5 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold flex items-center gap-1.5 sm:gap-2 transition-colors ${
+                view === 'content' ? 'bg-white text-brand-ink shadow-soft' : 'text-brand-slate hover:text-brand-ink'
+              }`}
+            >
+              <FileText size={16} className="shrink-0" /> <span className="hidden sm:inline">{tr('tabContent')}</span>
+            </button>
+            <button
+              onClick={() => setView('products')}
+              className={`flex-1 sm:flex-none justify-center whitespace-nowrap px-2.5 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold flex items-center gap-1.5 sm:gap-2 transition-colors ${
+                view === 'products' ? 'bg-white text-brand-ink shadow-soft' : 'text-brand-slate hover:text-brand-ink'
+              }`}
+            >
+              <Boxes size={16} className="shrink-0" /> <span className="hidden sm:inline">{tr('tabProducts')}</span>
+            </button>
+            <button
+              onClick={() => setView('gallery')}
+              className={`flex-1 sm:flex-none justify-center whitespace-nowrap px-2.5 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold flex items-center gap-1.5 sm:gap-2 transition-colors ${
+                view === 'gallery' ? 'bg-white text-brand-ink shadow-soft' : 'text-brand-slate hover:text-brand-ink'
+              }`}
+            >
+              <Images size={16} className="shrink-0" /> <span className="hidden sm:inline">{tr('tabGallery')}</span>
+            </button>
+            <button
+              onClick={() => setView('requests')}
+              className={`flex-1 sm:flex-none justify-center whitespace-nowrap px-2.5 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold flex items-center gap-1.5 sm:gap-2 transition-colors ${
+                view === 'requests' ? 'bg-white text-brand-ink shadow-soft' : 'text-brand-slate hover:text-brand-ink'
+              }`}
+            >
+              <Inbox size={16} className="shrink-0" /> <span className="hidden sm:inline">{tr('tabRequests')}</span>
+              {unread > 0 && (
+                <span className="text-xs px-1.5 py-0.5 rounded-full bg-brand-primary text-white">{unread}</span>
+              )}
+            </button>
+          </nav>
         </div>
       </header>
 
@@ -1069,7 +1073,7 @@ export default function Admin() {
                 />
               </div>
 
-              <div className="flex gap-2 md:ml-auto">
+              <div className="flex flex-wrap gap-2 md:ml-auto">
                 <button
                   onClick={() => setShowPreview((v) => !v)}
                   className="btn-ghost !px-3.5 !py-2 text-sm hidden lg:inline-flex"

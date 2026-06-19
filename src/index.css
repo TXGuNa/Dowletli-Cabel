@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+/* Inter is loaded via <link> in index.html (faster, non-render-blocking). */
 
 @tailwind base;
 @tailwind components;
@@ -38,7 +38,7 @@
   }
 
   .section-padding {
-    @apply py-24 px-6;
+    @apply py-16 px-6 sm:py-24;
   }
 
   .eyebrow {
@@ -51,6 +51,15 @@
 
   .btn-ghost {
     @apply inline-flex items-center justify-center gap-2 bg-white/60 backdrop-blur-md text-brand-ink px-7 py-3.5 rounded-full font-semibold border border-white/70 shadow-soft hover:border-brand-primary/30 hover:-translate-y-0.5 transition-all duration-300;
+  }
+
+  /* Hide scrollbar but keep scroll (used for swipeable mobile tab rows) */
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
   }
 }
 
