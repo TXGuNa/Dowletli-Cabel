@@ -28,7 +28,8 @@ export type AdminKey =
   | 'showInGallery' | 'hideFromGallery' | 'hiddenLabel'
   | 'pageImages' | 'mainBanner' | 'aboutImage' | 'fromGallery' | 'remove' | 'noGalleryYet'
   | 'brandName' | 'brandNameHint'
-  | 'socialLinks' | 'socialHint' | 'addSocial' | 'socialUrlPlaceholder';
+  | 'socialLinks' | 'socialHint' | 'addSocial' | 'socialUrlPlaceholder'
+  | 'adminLogin' | 'adminLoginHint' | 'newUsername' | 'newPassword' | 'updateLogin' | 'loginUpdated' | 'loginInvalid';
 
 type Dict = Record<AdminKey, string>;
 
@@ -128,6 +129,13 @@ const en: Dict = {
   socialHint: 'Pick a platform and paste the link. Empty ones are hidden on the site.',
   addSocial: 'Add social link',
   socialUrlPlaceholder: 'https://… or wa.me/…',
+  adminLogin: 'Admin login',
+  adminLoginHint: 'Change the username and password used to sign in to this panel.',
+  newUsername: 'Username',
+  newPassword: 'New password (min 6 characters)',
+  updateLogin: 'Update login',
+  loginUpdated: 'Login updated. Use the new username and password next time.',
+  loginInvalid: 'Enter a username and a password of at least 6 characters.',
 };
 
 const ru: Dict = {
@@ -226,6 +234,13 @@ const ru: Dict = {
   socialHint: 'Выберите платформу и вставьте ссылку. Пустые не показываются на сайте.',
   addSocial: 'Добавить соцсеть',
   socialUrlPlaceholder: 'https://… или wa.me/…',
+  adminLogin: 'Вход администратора',
+  adminLoginHint: 'Измените имя пользователя и пароль для входа в эту панель.',
+  newUsername: 'Имя пользователя',
+  newPassword: 'Новый пароль (мин. 6 символов)',
+  updateLogin: 'Обновить вход',
+  loginUpdated: 'Данные обновлены. Используйте новый логин и пароль при следующем входе.',
+  loginInvalid: 'Введите имя пользователя и пароль не менее 6 символов.',
 };
 
 const tkm: Dict = {
@@ -324,6 +339,13 @@ const tkm: Dict = {
   socialHint: 'Platforma saýlaň we baglanyşygy goýuň. Boş bolanlar sahypada görkezilmeýär.',
   addSocial: 'Sosial baglanyşyk goş',
   socialUrlPlaceholder: 'https://… ýa-da wa.me/…',
+  adminLogin: 'Admin girişi',
+  adminLoginHint: 'Bu panele girmek üçin ulanyjy adyny we açar sözüni üýtgediň.',
+  newUsername: 'Ulanyjy ady',
+  newPassword: 'Täze açar söz (azyndan 6 simwol)',
+  updateLogin: 'Girişi täzele',
+  loginUpdated: 'Giriş täzelendi. Indiki gezek täze ady we açar sözi ulanyň.',
+  loginInvalid: 'Ulanyjy adyny we azyndan 6 simwolly açar söz giriziň.',
 };
 
 const DICTS: Record<Lang, Dict> = { en, ru, tkm };
