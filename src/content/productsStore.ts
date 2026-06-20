@@ -24,6 +24,10 @@ export interface Product {
 const KEY = 'dowletli_products_v1';
 export const PRODUCTS_EVENT = 'dowletli-products';
 
+// Built-in category keys (translated in the locale files under products.categories).
+// The admin can also type brand-new category names; those are stored as-is.
+export const DEFAULT_CATEGORIES = ['aerial', 'underground', 'ftth', 'directBurial'] as const;
+
 // Original 5 products with their images + category keys
 const SEED: { key: string; category: string; image: string }[] = [
   { key: 'selfSupporting', category: 'aerial', image: '/assets/product-self-supporting.png' },
