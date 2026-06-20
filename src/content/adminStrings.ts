@@ -19,6 +19,7 @@ export type AdminKey =
   | 'addProduct' | 'addFirstProduct' | 'noProducts'
   | 'replace' | 'upload' | 'title' | 'category' | 'description' | 'specs' | 'addSpec' | 'deleteProduct'
   | 'addItem' | 'categoryPlaceholder' | 'productsNote'
+  | 'selectCategory' | 'addNewCategory' | 'newCategoryPlaceholder' | 'categoryHelp'
   | 'loginTitle' | 'loginSubtitle' | 'username' | 'password' | 'wrongCreds' | 'checking' | 'signIn' | 'backToSite'
   | 'confirmResetContent' | 'confirmResetProducts' | 'confirmDeleteProduct' | 'confirmClearRequests'
   | 'imported' | 'importError' | 'imageTooBig'
@@ -82,6 +83,10 @@ const en: Dict = {
   deleteProduct: 'Delete product',
   addItem: 'Add item',
   categoryPlaceholder: 'e.g. aerial, underground, ftth…',
+  selectCategory: 'Select category…',
+  addNewCategory: 'Add new category…',
+  newCategoryPlaceholder: 'New category name',
+  categoryHelp: 'Pick a category or add your own. It shows on the product card.',
   productsNote: 'Changes apply to the website instantly. Images are stored in this browser — keep them small.',
   loginTitle: 'Admin Panel',
   loginSubtitle: 'Döwletli content editor',
@@ -176,6 +181,10 @@ const ru: Dict = {
   deleteProduct: 'Удалить продукт',
   addItem: 'Добавить',
   categoryPlaceholder: 'напр. aerial, underground, ftth…',
+  selectCategory: 'Выберите категорию…',
+  addNewCategory: 'Добавить новую категорию…',
+  newCategoryPlaceholder: 'Название новой категории',
+  categoryHelp: 'Выберите категорию или добавьте свою. Она показывается на карточке продукта.',
   productsNote: 'Изменения применяются к сайту сразу. Фото хранятся в этом браузере — используйте небольшие файлы.',
   loginTitle: 'Панель администратора',
   loginSubtitle: 'Редактор сайта Döwletli',
@@ -270,6 +279,10 @@ const tkm: Dict = {
   deleteProduct: 'Önümi poz',
   addItem: 'Goş',
   categoryPlaceholder: 'mysal: aerial, underground, ftth…',
+  selectCategory: 'Kategoriýa saýlaň…',
+  addNewCategory: 'Täze kategoriýa goş…',
+  newCategoryPlaceholder: 'Täze kategoriýanyň ady',
+  categoryHelp: 'Kategoriýa saýlaň ýa-da öz kategoriýaňyzy goşuň. Önüm kartoçkasynda görkezilýär.',
   productsNote: 'Üýtgeşmeler sahypa derrew ulanylýar. Suratlar şu brauzerde saklanýar — kiçi faýllary ulanyň.',
   loginTitle: 'Admin paneli',
   loginSubtitle: 'Döwletli mazmun redaktory',
@@ -459,4 +472,33 @@ export function sectionLabel(key: string, lang: Lang): string {
 
 export function fieldLabel(key: string, lang: Lang): string {
   return FIELDS[key]?.[lang] ?? humanize(key);
+}
+
+// Short explanations for the built-in product categories (shown on hover in the
+// Products manager). Custom categories typed by the admin have no hint.
+const CATEGORY_HINTS: Record<string, Record<Lang, string>> = {
+  aerial: {
+    en: 'Overhead cables strung between poles or towers (ADSS, figure-8, self-supporting).',
+    ru: 'Воздушные кабели, подвешиваемые между опорами (ADSS, «восьмёрка», самонесущие).',
+    tkm: 'Sütünleriň arasyndan asylýan howa kabelleri (ADSS, sekiz görnüşli, öz-özüni göteriji).',
+  },
+  underground: {
+    en: 'Cables pulled through underground ducts or conduits.',
+    ru: 'Кабели, протягиваемые в подземных каналах или трубах.',
+    tkm: 'Ýerasty turbalardan ýa-da kanaldan çekilýän kabeller.',
+  },
+  ftth: {
+    en: 'Fiber-to-the-Home — drop and indoor cables to subscriber premises.',
+    ru: 'Оптика до дома (FTTH) — абонентские (drop) и внутренние кабели.',
+    tkm: 'Öýe çenli optika (FTTH) — abonent (drop) we içerki kabeller.',
+  },
+  directBurial: {
+    en: 'Armored cables laid directly in the ground without ducts.',
+    ru: 'Бронированные кабели, укладываемые прямо в грунт без каналов.',
+    tkm: 'Kanalsyz, göni ýere gömülýän sowutly kabeller.',
+  },
+};
+
+export function categoryHint(key: string, lang: Lang): string | null {
+  return CATEGORY_HINTS[key]?.[lang] ?? null;
 }

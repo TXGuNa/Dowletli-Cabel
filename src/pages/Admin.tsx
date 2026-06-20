@@ -5,7 +5,7 @@ import {
   Lock, Save, RotateCcw, Download, Upload, LogOut, ExternalLink,
   Search, Plus, Trash2, Check, Inbox, FileText, Mail, CalendarClock, RefreshCw,
   Eye, EyeOff, MonitorSmartphone, Boxes, ImagePlus, X, Globe, ChevronDown,
-  Images, Image as ImageIcon, Upload as UploadIcon,
+  Images, Image as ImageIcon, Upload as UploadIcon, Info,
 } from 'lucide-react';
 import { useContentStore } from '../content/ContentContext';
 import {
@@ -19,14 +19,14 @@ import {
   loadSubmissions, markRead, deleteSubmission, clearSubmissions,
 } from '../content/submissionsStore';
 import { useProducts } from '../content/ProductsContext';
-import { type Product, makeEmptyProduct, defaultProducts } from '../content/productsStore';
+import { type Product, makeEmptyProduct, defaultProducts, DEFAULT_CATEGORIES } from '../content/productsStore';
 import { useGallery } from '../content/GalleryContext';
 import { type GalleryImage, GALLERY_CATEGORIES, makeEmptyImage, defaultGallery } from '../content/galleryStore';
 import { useSettings } from '../content/SettingsContext';
 import { type SiteSettings, makeSocialLink } from '../content/settingsStore';
 import SocialIcon from '../components/SocialIcon';
 import { SOCIAL_PLATFORMS } from '../content/socials';
-import { adminT, sectionLabel, fieldLabel, type AdminKey } from '../content/adminStrings';
+import { adminT, sectionLabel, fieldLabel, categoryHint, type AdminKey } from '../content/adminStrings';
 
 type Tr = (k: AdminKey) => string;
 
@@ -157,10 +157,15 @@ function matches(value: Json, path: (string | number)[], q: string): boolean {
 // ---- Leaf editors ----------------------------------------------------------
 
 function StringField({
-  value, path, onChange, lang,
-}: { value: string; path: (string | number)[]; onChange: (p: (string | number)[], v: Json) => void; lang: Lang }) {
+  value, path, onChange, lang, onFocusField,
+}: {
+  value: string; path: (string | number)[];
+  onChange: (p: (string | number)[], v: Json) => void; lang: Lang;
+  onFocusField?: (path: (string | number)[], value: string) => void;
+}) {
   const label = fieldLabel(String(path[path.length - 1]), lang);
   const long = value.length > 60;
+  const focus = () => onFocusField?.(path, value);
   return (
     <div>
       <label className="block text-sm font-semibold text-brand-ink mb-1.5">{label}</label>
@@ -169,12 +174,14 @@ function StringField({
           value={value}
           rows={Math.min(6, Math.ceil(value.length / 60))}
           onChange={(e) => onChange(path, e.target.value)}
+          onFocus={focus}
           className="w-full bg-brand-bg border border-brand-border rounded-xl px-4 py-2.5 text-brand-text focus:border-brand-primary focus:ring-4 focus:ring-brand-primary/10 focus:outline-none resize-y"
         />
       ) : (
         <input
           value={value}
           onChange={(e) => onChange(path, e.target.value)}
+          onFocus={focus}
           className="w-full bg-brand-bg border border-brand-border rounded-xl px-4 py-2.5 text-brand-text focus:border-brand-primary focus:ring-4 focus:ring-brand-primary/10 focus:outline-none"
         />
       )}
@@ -183,8 +190,12 @@ function StringField({
 }
 
 function ArrayField({
-  value, path, onChange, tr, lang,
-}: { value: Json[]; path: (string | number)[]; onChange: (p: (string | number)[], v: Json) => void; tr: Tr; lang: Lang }) {
+  value, path, onChange, tr, lang, onFocusField,
+}: {
+  value: Json[]; path: (string | number)[];
+  onChange: (p: (string | number)[], v: Json) => void; tr: Tr; lang: Lang;
+  onFocusField?: (path: (string | number)[], value: string) => void;
+}) {
   const label = fieldLabel(String(path[path.length - 1]), lang);
   return (
     <div>
@@ -195,6 +206,7 @@ function ArrayField({
             <input
               value={String(item)}
               onChange={(e) => onChange([...path, i], e.target.value)}
+              onFocus={() => onFocusField?.([...path, i], String(item))}
               className="flex-1 bg-brand-bg border border-brand-border rounded-xl px-4 py-2.5 text-brand-text focus:border-brand-primary focus:ring-4 focus:ring-brand-primary/10 focus:outline-none"
             />
             <button
@@ -220,7 +232,7 @@ function ArrayField({
 }
 
 function NodeEditor({
-  value, path, onChange, query, depth, tr, lang,
+  value, path, onChange, query, depth, tr, lang, onFocusField,
 }: {
   value: Json;
   path: (string | number)[];
@@ -229,15 +241,16 @@ function NodeEditor({
   depth: number;
   tr: Tr;
   lang: Lang;
+  onFocusField?: (path: (string | number)[], value: string) => void;
 }) {
   if (typeof value === 'string') {
     if (!matches(value, path, query)) return null;
-    return <StringField value={value} path={path} onChange={onChange} lang={lang} />;
+    return <StringField value={value} path={path} onChange={onChange} lang={lang} onFocusField={onFocusField} />;
   }
   if (Array.isArray(value)) {
     if (value.every((v) => typeof v === 'string')) {
       if (!matches(value, path, query)) return null;
-      return <ArrayField value={value} path={path} onChange={onChange} tr={tr} lang={lang} />;
+      return <ArrayField value={value} path={path} onChange={onChange} tr={tr} lang={lang} onFocusField={onFocusField} />;
     }
     return null;
   }
@@ -256,7 +269,7 @@ function NodeEditor({
           <div className="grid sm:grid-cols-2 gap-5">
             {entries.map(([k, v]) => (
               <div key={k} className={typeof v === 'object' && v !== null && !Array.isArray(v) ? 'sm:col-span-2' : ''}>
-                <NodeEditor value={v} path={[...path, k]} onChange={onChange} query={query} depth={depth + 1} tr={tr} lang={lang} />
+                <NodeEditor value={v} path={[...path, k]} onChange={onChange} query={query} depth={depth + 1} tr={tr} lang={lang} onFocusField={onFocusField} />
               </div>
             ))}
           </div>
@@ -504,6 +517,78 @@ function RequestsView({ serviceLabel, tr }: { serviceLabel: (id: string) => stri
   );
 }
 
+// ---- Category picker (existing categories + add-your-own) ------------------
+
+function CategorySelect({
+  value, onChange, options, lang, tr,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  options: string[];
+  lang: Lang;
+  tr: Tr;
+}) {
+  const [adding, setAdding] = useState(false);
+  const [draft, setDraft] = useState('');
+
+  const label = (key: string) =>
+    (DEFAULT_CATEGORIES as readonly string[]).includes(key) ? fieldLabel(key, lang) : key;
+
+  const confirm = () => {
+    const v = draft.trim();
+    if (v) onChange(v);
+    setDraft('');
+    setAdding(false);
+  };
+
+  if (adding) {
+    return (
+      <div className="flex gap-2">
+        <input
+          autoFocus
+          value={draft}
+          onChange={(e) => setDraft(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') { e.preventDefault(); confirm(); }
+            if (e.key === 'Escape') { setDraft(''); setAdding(false); }
+          }}
+          placeholder={tr('newCategoryPlaceholder')}
+          className="flex-1 bg-brand-bg border border-brand-primary/50 rounded-xl px-4 py-2.5 text-brand-text focus:border-brand-ink focus:outline-none"
+        />
+        <button
+          type="button" onClick={confirm} title={tr('addNewCategory')}
+          className="px-3 rounded-xl border border-brand-border text-brand-primary hover:bg-brand-soft transition-colors"
+        >
+          <Check size={16} />
+        </button>
+        <button
+          type="button" onClick={() => { setDraft(''); setAdding(false); }} title={tr('remove')}
+          className="px-3 rounded-xl border border-brand-border text-brand-slate hover:text-red-500 hover:border-red-200 transition-colors"
+        >
+          <X size={16} />
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <select
+      value={value}
+      onChange={(e) => {
+        if (e.target.value === '__add__') setAdding(true);
+        else onChange(e.target.value);
+      }}
+      className="w-full bg-brand-bg border border-brand-border rounded-xl px-4 py-2.5 text-brand-text focus:border-brand-ink focus:outline-none"
+    >
+      <option value="">{tr('selectCategory')}</option>
+      {options.map((c) => (
+        <option key={c} value={c}>{label(c)}</option>
+      ))}
+      <option value="__add__">＋ {tr('addNewCategory')}</option>
+    </select>
+  );
+}
+
 // ---- Products manager ------------------------------------------------------
 
 function ProductsManager({
@@ -516,6 +601,14 @@ function ProductsManager({
   tr: Tr;
 }) {
   const resetProducts = () => setProducts(defaultProducts());
+
+  // Categories offered in the dropdown: the built-in ones + any already used
+  // by a product (so a new category added on one product appears on the others).
+  const allCategories = useMemo(() => {
+    const set = new Set<string>(DEFAULT_CATEGORIES);
+    for (const pr of products) if (pr.category.trim()) set.add(pr.category.trim());
+    return Array.from(set);
+  }, [products]);
 
   const patch = (id: string, p: Partial<Product>) =>
     setProducts(products.map((pr) => (pr.id === id ? { ...pr, ...p } : pr)));
@@ -607,12 +700,27 @@ function ProductsManager({
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-semibold text-brand-ink mb-1.5">{tr('category')}</label>
-                      <input
+                      <div className="flex items-center gap-1.5 mb-1.5">
+                        <label className="text-sm font-semibold text-brand-ink">{tr('category')}</label>
+                        <span className="relative group inline-flex">
+                          <Info size={14} className="text-brand-slate cursor-help" />
+                          <div className="pointer-events-none absolute left-0 top-full mt-2 w-72 max-w-[80vw] opacity-0 group-hover:opacity-100 transition-opacity duration-150 z-30 bg-brand-ink text-white text-xs rounded-xl p-3 shadow-card space-y-2">
+                            <p className="text-white/70">{tr('categoryHelp')}</p>
+                            {DEFAULT_CATEGORIES.map((c) => (
+                              <div key={c}>
+                                <span className="font-semibold">{fieldLabel(c, lang)}</span>
+                                <span className="text-white/80"> — {categoryHint(c, lang)}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </span>
+                      </div>
+                      <CategorySelect
                         value={p.category}
-                        onChange={(e) => patch(p.id, { category: e.target.value })}
-                        placeholder={tr('categoryPlaceholder')}
-                        className="w-full bg-brand-bg border border-brand-border rounded-xl px-4 py-2.5 text-brand-text focus:border-brand-ink focus:outline-none"
+                        onChange={(v) => patch(p.id, { category: v })}
+                        options={allCategories}
+                        lang={lang}
+                        tr={tr}
                       />
                     </div>
                   </div>
@@ -867,6 +975,42 @@ function AdminLangSelect({ value, onChange }: { value: Lang; onChange: (l: Lang)
   );
 }
 
+// ---- Live-preview highlight -------------------------------------------------
+
+// Which public route shows each top-level content section.
+const SECTION_ROUTE: Record<string, string> = {
+  hero: '/', home: '/', features: '/', brand: '/', nav: '/', footer: '/',
+  about: '/about', products: '/products', gallery: '/gallery',
+  contact: '/contact', booking: '/book',
+};
+
+// Find the given text inside the (same-origin) preview iframe, scroll to it and
+// flash a temporary outline. Best-effort: matches the start of the saved text.
+function flashInPreview(doc: Document | null | undefined, text: string) {
+  if (!doc || !doc.body) return;
+  const needle = text.replace(/<\/?\d+>/g, '').trim().slice(0, 30).toLowerCase();
+  if (needle.length < 2) return;
+  const walker = doc.createTreeWalker(doc.body, NodeFilter.SHOW_TEXT);
+  let el: HTMLElement | null = null;
+  while (walker.nextNode()) {
+    const t = (walker.currentNode.nodeValue || '').trim().toLowerCase();
+    if (t.length >= 2 && t.includes(needle)) {
+      el = walker.currentNode.parentElement as HTMLElement | null;
+      break;
+    }
+  }
+  if (!el) return;
+  el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  const saved = el.style.cssText;
+  el.style.outline = '3px solid #2563EB';
+  el.style.outlineOffset = '3px';
+  el.style.borderRadius = '8px';
+  el.style.transition = 'outline-color 0.25s ease';
+  el.style.scrollMarginTop = '90px';
+  const target = el;
+  window.setTimeout(() => { target.style.cssText = saved; }, 2200);
+}
+
 // ---- Main ------------------------------------------------------------------
 
 export default function Admin() {
@@ -887,9 +1031,16 @@ export default function Admin() {
   const [savedFlash, setSavedFlash] = useState(false);
   const [showPreview, setShowPreview] = useState(true);
   const [previewKey, setPreviewKey] = useState(0);
+  const [previewSrc, setPreviewSrc] = useState(`/?lang=${lang}`);
+  const previewRef = useRef<HTMLIFrameElement>(null);
+  const pendingHighlightRef = useRef<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const submissions = useSubmissions();
   const unread = submissions.filter((s) => !s.read).length;
+
+  // Keep the preview on the home page in the current language when the admin
+  // switches the editing language.
+  useEffect(() => { setPreviewSrc(`/?lang=${lang}`); }, [lang]);
 
   // Nothing is applied to the live site until Save is pressed.
   const dirty = useMemo(
@@ -912,6 +1063,28 @@ export default function Admin() {
 
   const update = (p: (string | number)[], v: Json) => {
     setDraft((d) => ({ ...d, [lang]: setByPath(d[lang], p, v) }));
+  };
+
+  // When a content field is focused, point the live preview at the right page
+  // and flash the matching text so the admin sees what they're editing.
+  const focusInPreview = (path: (string | number)[], value: string) => {
+    if (!showPreview || !value.trim()) return;
+    const route = SECTION_ROUTE[String(path[0])] ?? '/';
+    const src = route === '/' ? `/?lang=${lang}` : `${route}?lang=${lang}`;
+    if (src !== previewSrc) {
+      pendingHighlightRef.current = value; // run after the iframe finishes loading
+      setPreviewSrc(src);
+    } else {
+      flashInPreview(previewRef.current?.contentDocument, value);
+    }
+  };
+
+  const onPreviewLoad = () => {
+    const pending = pendingHighlightRef.current;
+    if (!pending) return;
+    pendingHighlightRef.current = null;
+    // Give the in-iframe React app a tick to render before searching the DOM.
+    window.setTimeout(() => flashInPreview(previewRef.current?.contentDocument, pending), 400);
   };
 
   const handleSave = () => {
@@ -1221,6 +1394,7 @@ export default function Admin() {
                       depth={0}
                       tr={tr}
                       lang={lang}
+                      onFocusField={focusInPreview}
                     />
                   );
                 })}
@@ -1251,7 +1425,7 @@ export default function Admin() {
                           <RefreshCw size={15} />
                         </button>
                         <Link
-                          to={`/?lang=${lang}`}
+                          to={previewSrc}
                           target="_blank"
                           title="Open in new tab"
                           className="p-1.5 rounded-lg text-brand-slate hover:text-brand-ink hover:bg-white transition-colors"
@@ -1261,8 +1435,10 @@ export default function Admin() {
                       </div>
                     </div>
                     <iframe
-                      key={`${previewKey}-${lang}`}
-                      src={`/?lang=${lang}`}
+                      key={previewKey}
+                      ref={previewRef}
+                      src={previewSrc}
+                      onLoad={onPreviewLoad}
                       title="Live preview"
                       className="w-full h-[calc(100vh-11rem)] bg-white"
                     />
