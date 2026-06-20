@@ -143,6 +143,15 @@ function setByPath(root: LangContent, path: (string | number)[], value: Json): L
   return next;
 }
 
+function getByPath(root: LangContent | undefined, path: (string | number)[]): string {
+  let cur: Json | undefined = root as Json | undefined;
+  for (const k of path) {
+    if (cur && typeof cur === 'object') cur = (cur as Record<string | number, Json>)[k];
+    else return '';
+  }
+  return typeof cur === 'string' ? cur : '';
+}
+
 function matches(value: Json, path: (string | number)[], q: string): boolean {
   if (!q) return true;
   const inPath = path.join('.').toLowerCase().includes(q);
@@ -996,10 +1005,14 @@ const PREVIEW_PAGES: { path: string; key: string }[] = [
 
 // Find the given text inside the (same-origin) preview iframe, scroll to it and
 // flash a temporary outline. Best-effort: matches the start of the saved text.
-function flashInPreview(doc: Document | null | undefined, text: string) {
-  if (!doc || !doc.body) return;
-  const needle = text.replace(/<\/?\d+>/g, '').trim().slice(0, 30).toLowerCase();
-  if (needle.length < 2) return;
+function flashInPreview(doc: Document | null | undefined, text: string): boolean {
+  if (!doc || !doc.body) return false;
+  // Titles can contain markup like "Our <1>Products</1>", which renders as
+  // separate text nodes. Use the longest plain segment so the search still hits.
+  const parts = text.split(/<\/?\d+>/).map((s) => s.trim()).filter(Boolean);
+  const longest = parts.sort((a, b) => b.length - a.length)[0] || '';
+  const needle = longest.slice(0, 30).toLowerCase();
+  if (needle.length < 2) return false;
   const walker = doc.createTreeWalker(doc.body, NodeFilter.SHOW_TEXT);
   let el: HTMLElement | null = null;
   while (walker.nextNode()) {
@@ -1009,16 +1022,27 @@ function flashInPreview(doc: Document | null | undefined, text: string) {
       break;
     }
   }
-  if (!el) return;
+  if (!el) return false;
   el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  const saved = el.style.cssText;
+  const prev = el.style.cssText;
   el.style.outline = '3px solid #2563EB';
   el.style.outlineOffset = '3px';
   el.style.borderRadius = '8px';
-  el.style.transition = 'outline-color 0.25s ease';
+  el.style.backgroundColor = 'rgba(37,99,235,0.10)';
   el.style.scrollMarginTop = '90px';
   const target = el;
-  window.setTimeout(() => { target.style.cssText = saved; }, 2200);
+  window.setTimeout(() => { target.style.cssText = prev; }, 2400);
+  return true;
+}
+
+// Retry the flash a few times while the in-iframe React app finishes rendering.
+function flashWithRetry(getDoc: () => Document | null | undefined, text: string, attempts = 8) {
+  let n = 0;
+  const tick = () => {
+    if (flashInPreview(getDoc(), text)) return;
+    if (++n < attempts) window.setTimeout(tick, 220);
+  };
+  tick();
 }
 
 // ---- Admin login (username/password) editor --------------------------------
@@ -1146,16 +1170,21 @@ export default function Admin() {
   };
 
   // When a content field is focused, point the live preview at the right page
-  // and flash the matching text so the admin sees what they're editing.
+  // and flash the matching text so the admin sees what they're editing. We search
+  // for the SAVED value (what's actually on the page) so highlighting still works
+  // even while the draft value differs (before pressing Save).
   const focusInPreview = (path: (string | number)[], value: string) => {
-    if (!showPreview || !value.trim()) return;
+    if (!showPreview) return;
+    const saved = getByPath(content[lang], path);
+    const needle = (saved || value || '').trim();
+    if (!needle) return;
     const route = SECTION_ROUTE[String(path[0])] ?? '/';
     const src = route === '/' ? `/?lang=${lang}` : `${route}?lang=${lang}`;
     if (src !== previewSrc) {
-      pendingHighlightRef.current = value; // run after the iframe finishes loading
+      pendingHighlightRef.current = needle; // run after the iframe finishes loading
       setPreviewSrc(src);
     } else {
-      flashInPreview(previewRef.current?.contentDocument, value);
+      flashWithRetry(() => previewRef.current?.contentDocument, needle);
     }
   };
 
@@ -1163,8 +1192,7 @@ export default function Admin() {
     const pending = pendingHighlightRef.current;
     if (!pending) return;
     pendingHighlightRef.current = null;
-    // Give the in-iframe React app a tick to render before searching the DOM.
-    window.setTimeout(() => flashInPreview(previewRef.current?.contentDocument, pending), 400);
+    flashWithRetry(() => previewRef.current?.contentDocument, pending);
   };
 
   const handleSave = () => {
@@ -1387,6 +1415,13 @@ export default function Admin() {
                   <input
                     value={settingsDraft.brandName}
                     onChange={(e) => setSettingsDraft({ ...settingsDraft, brandName: e.target.value })}
+                    onFocus={() => {
+                      if (!showPreview) return;
+                      const src = `/?lang=${lang}`;
+                      const needle = (settings.brandName || settingsDraft.brandName || '').trim();
+                      if (src !== previewSrc) { pendingHighlightRef.current = needle; setPreviewSrc(src); }
+                      else flashWithRetry(() => previewRef.current?.contentDocument, needle);
+                    }}
                     className="w-full bg-brand-bg border border-brand-border rounded-xl px-4 py-2.5 text-brand-ink font-semibold focus:border-brand-ink focus:outline-none"
                   />
                   <p className="text-xs text-brand-slate mt-2">{tr('brandNameHint')}</p>
