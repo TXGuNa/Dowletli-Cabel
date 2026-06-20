@@ -13,7 +13,7 @@ import {
   LANGS, LANG_LABELS,
 } from '../content/contentStore';
 import type { Lang } from '../content/detectLanguage';
-import { verifyCredentials } from '../content/auth';
+import { verifyCredentials, changeCredentials, getAdminUsername } from '../content/auth';
 import {
   type Submission, SUBMISSIONS_EVENT,
   loadSubmissions, markRead, deleteSubmission, clearSubmissions,
@@ -1011,6 +1011,76 @@ function flashInPreview(doc: Document | null | undefined, text: string) {
   window.setTimeout(() => { target.style.cssText = saved; }, 2200);
 }
 
+// ---- Admin login (username/password) editor --------------------------------
+
+function AccountCard({ tr }: { tr: Tr }) {
+  const [username, setUsername] = useState(() => getAdminUsername());
+  const [password, setPassword] = useState('');
+  const [status, setStatus] = useState<'idle' | 'ok' | 'err'>('idle');
+  const [busy, setBusy] = useState(false);
+
+  const submit = async () => {
+    setBusy(true);
+    const ok = await changeCredentials(username, password);
+    setBusy(false);
+    if (ok) {
+      setPassword('');
+      setStatus('ok');
+    } else {
+      setStatus('err');
+    }
+  };
+
+  return (
+    <section className="bg-white border border-brand-border rounded-2xl p-6 shadow-soft">
+      <h3 className="text-lg font-bold text-brand-ink mb-1.5 flex items-center gap-2">
+        <span className="w-2 h-2 rounded-full bg-brand-primary" />
+        {tr('adminLogin')}
+      </h3>
+      <p className="text-xs text-brand-slate mb-4">{tr('adminLoginHint')}</p>
+
+      <div className="grid sm:grid-cols-2 gap-4">
+        <div>
+          <label className="block text-sm font-semibold text-brand-ink mb-1.5">{tr('newUsername')}</label>
+          <input
+            value={username}
+            autoComplete="username"
+            onChange={(e) => { setUsername(e.target.value); setStatus('idle'); }}
+            className="w-full bg-brand-bg border border-brand-border rounded-xl px-4 py-2.5 text-brand-ink focus:border-brand-ink focus:outline-none"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-semibold text-brand-ink mb-1.5">{tr('newPassword')}</label>
+          <input
+            type="password"
+            value={password}
+            autoComplete="new-password"
+            placeholder="••••••••"
+            onChange={(e) => { setPassword(e.target.value); setStatus('idle'); }}
+            className="w-full bg-brand-bg border border-brand-border rounded-xl px-4 py-2.5 text-brand-ink focus:border-brand-ink focus:outline-none"
+          />
+        </div>
+      </div>
+
+      {status === 'ok' && (
+        <p className="text-sm text-green-600 mt-3 flex items-center gap-1.5"><Check size={15} /> {tr('loginUpdated')}</p>
+      )}
+      {status === 'err' && (
+        <p className="text-sm text-red-500 mt-3">{tr('loginInvalid')}</p>
+      )}
+
+      <button
+        type="button"
+        onClick={submit}
+        disabled={busy}
+        className="btn-primary !px-5 !py-2.5 text-sm mt-4 disabled:opacity-60"
+      >
+        <Lock size={15} /> {tr('updateLogin')}
+      </button>
+    </section>
+  );
+}
+
 // ---- Main ------------------------------------------------------------------
 
 export default function Admin() {
@@ -1369,6 +1439,9 @@ export default function Admin() {
                     <Plus size={15} /> {tr('addSocial')}
                   </button>
                 </section>
+
+                {/* Admin login (username & password) — applies immediately */}
+                <AccountCard tr={tr} />
 
                 {sections.map(([key, value]) => {
                   // Product items (with images) are managed in the Products tab.
