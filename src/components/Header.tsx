@@ -34,7 +34,7 @@ export default function Header() {
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled
-          ? 'bg-white/60 backdrop-blur-xl py-3 border-b border-white/60 shadow-soft'
+          ? 'bg-white/90 md:bg-white/60 backdrop-blur-xl py-3 border-b border-white/60 shadow-soft'
           : 'bg-transparent py-5 border-b border-transparent'
       }`}
     >
@@ -78,7 +78,7 @@ export default function Header() {
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="md:hidden absolute top-full left-0 right-0 bg-white/80 backdrop-blur-xl border-t border-white/60 shadow-card p-6 flex flex-col gap-1">
+        <div className="md:hidden absolute top-full left-0 right-0 bg-white/95 border-t border-brand-border shadow-card p-6 flex flex-col gap-1">
           {navLinks.map((link) => (
             <Link
               key={link.key}

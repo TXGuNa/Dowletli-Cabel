@@ -63,6 +63,46 @@
   }
 }
 
+/* ============================================================
+   Mobile performance (≤768px)
+   backdrop-filter "frosted glass" and never-ending transform/
+   blur animations are the biggest causes of scroll jank on
+   phones. Below 768px we swap glass for solid surfaces and stop
+   the perpetual decorative animations. Desktop keeps the effects.
+   ============================================================ */
+@media (max-width: 768px) {
+  /* Frosted-glass component surfaces → solid (no per-frame re-blur) */
+  .glass,
+  .glass-strong,
+  .glass-panel {
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
+  .glass { background-color: rgba(255, 255, 255, 0.9); }
+  .glass-strong { background-color: rgba(255, 255, 255, 0.96); }
+  .glass-panel { background-color: rgba(255, 255, 255, 0.92); }
+
+  /* Any remaining backdrop-blur utilities (Header, Gallery, Admin, …) */
+  [class*="backdrop-blur"] {
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
+
+  /* Stop perpetual decorative animations repainting every frame */
+  .animate-drift,
+  .animate-drift-slow,
+  .animate-dash,
+  .animate-float {
+    animation: none !important;
+  }
+
+  /* Large blurred decorative orbs (blur-[130–150px]) — heavy to rasterize
+     and useless behind solid mobile cards. The aurora gradient stays. */
+  [class*="blur-["] {
+    display: none !important;
+  }
+}
+
 /* Custom scrollbar for a polished feel */
 ::-webkit-scrollbar {
   width: 10px;
