@@ -59,9 +59,9 @@ export default function Hero() {
       <div className="absolute inset-0 z-0">
         <div className="absolute inset-0 bg-aurora" />
         <div className="absolute inset-0 bg-hero-grid bg-[size:46px_46px] opacity-60" />
-        <div className="absolute -top-24 -left-20 w-[460px] h-[460px] bg-brand-primary/20 rounded-full blur-[130px] animate-drift-slow" />
-        <div className="absolute top-10 right-0 w-[420px] h-[420px] bg-brand-cyan/20 rounded-full blur-[130px] animate-drift" />
-        <div className="absolute top-0 left-0 right-0 h-[360px]"><FiberLines /></div>
+        <div className="hidden sm:block absolute -top-24 -left-20 w-[460px] h-[460px] bg-brand-primary/20 rounded-full blur-[130px] animate-drift-slow" />
+        <div className="hidden sm:block absolute top-10 right-0 w-[420px] h-[420px] bg-brand-cyan/20 rounded-full blur-[130px] animate-drift" />
+        <div className="hidden sm:block absolute top-0 left-0 right-0 h-[360px]"><FiberLines /></div>
       </div>
 
       <div className="container mx-auto px-6 pt-28 sm:pt-36 pb-16 sm:pb-20 relative z-10">
