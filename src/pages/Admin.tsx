@@ -741,10 +741,32 @@ function GalleryManager({
             <div key={g.id} className="bg-white border border-brand-border rounded-2xl p-3 shadow-soft">
               <div className="relative aspect-[4/3] rounded-xl overflow-hidden bg-brand-soft border border-brand-border flex items-center justify-center">
                 {g.image ? (
-                  <img src={g.image} alt="" className="w-full h-full object-cover" />
+                  <img src={g.image} alt="" className={`w-full h-full object-cover transition-opacity ${g.hidden ? 'opacity-40' : ''}`} />
                 ) : (
                   <ImagePlus size={24} className="text-brand-slate" strokeWidth={1.5} />
                 )}
+
+                {/* Show / hide on the public Gallery page */}
+                {g.image && (
+                  <button
+                    onClick={() => patchImg(g.id, { hidden: !g.hidden })}
+                    title={g.hidden ? tr('showInGallery') : tr('hideFromGallery')}
+                    className={`absolute top-2 left-2 rounded-lg p-1.5 border transition-colors ${
+                      g.hidden
+                        ? 'bg-brand-ink text-white border-brand-ink'
+                        : 'bg-white/90 text-brand-slate hover:text-brand-ink border-brand-border'
+                    }`}
+                  >
+                    {g.hidden ? <EyeOff size={14} /> : <Eye size={14} />}
+                  </button>
+                )}
+
+                {g.hidden && g.image && (
+                  <span className="absolute inset-x-0 bottom-2 mx-auto w-max px-2.5 py-1 rounded-full bg-brand-ink/85 text-white text-[11px] font-semibold inline-flex items-center gap-1">
+                    <EyeOff size={12} /> {tr('hiddenLabel')}
+                  </span>
+                )}
+
                 <button
                   onClick={() => removeImg(g.id)}
                   title={tr('remove')}

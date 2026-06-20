@@ -24,6 +24,7 @@ export type AdminKey =
   | 'imported' | 'importError' | 'imageTooBig'
   | 'tabGallery' | 'galleryTitle' | 'gallerySubtitle' | 'addImage' | 'addFirstImage' | 'noImages'
   | 'galleryNote' | 'confirmDeleteImage' | 'confirmResetGallery' | 'photoCategory'
+  | 'showInGallery' | 'hideFromGallery' | 'hiddenLabel'
   | 'pageImages' | 'mainBanner' | 'aboutImage' | 'fromGallery' | 'remove' | 'noGalleryYet'
   | 'brandName' | 'brandNameHint'
   | 'socialLinks' | 'socialHint' | 'addSocial' | 'socialUrlPlaceholder';
@@ -103,10 +104,13 @@ const en: Dict = {
   addImage: 'Add photo',
   addFirstImage: 'Add your first photo',
   noImages: 'No photos yet',
-  galleryNote: 'Photos are stored in this browser — keep them small. Changes apply instantly.',
+  galleryNote: 'Photos are stored in this browser — keep them small. Changes apply instantly. Use the eye icon to hide a photo from the Gallery page without deleting it.',
   confirmDeleteImage: 'Remove this photo?',
   confirmResetGallery: 'Reset gallery to the original photos?',
   photoCategory: 'Category',
+  showInGallery: 'Show in gallery',
+  hideFromGallery: 'Hide from gallery',
+  hiddenLabel: 'Hidden',
   pageImages: 'Page images',
   mainBanner: 'Home — main banner',
   aboutImage: 'About — photo',
@@ -194,10 +198,13 @@ const ru: Dict = {
   addImage: 'Добавить фото',
   addFirstImage: 'Добавьте первое фото',
   noImages: 'Пока нет фото',
-  galleryNote: 'Фото хранятся в этом браузере — используйте небольшие файлы. Изменения применяются сразу.',
+  galleryNote: 'Фото хранятся в этом браузере — используйте небольшие файлы. Изменения применяются сразу. Нажмите на значок глаза, чтобы скрыть фото со страницы галереи, не удаляя его.',
   confirmDeleteImage: 'Удалить это фото?',
   confirmResetGallery: 'Вернуть исходные фото галереи?',
   photoCategory: 'Категория',
+  showInGallery: 'Показывать в галерее',
+  hideFromGallery: 'Скрыть из галереи',
+  hiddenLabel: 'Скрыто',
   pageImages: 'Изображения страниц',
   mainBanner: 'Главная — баннер',
   aboutImage: 'О нас — фото',
@@ -285,10 +292,13 @@ const tkm: Dict = {
   addImage: 'Surat goş',
   addFirstImage: 'Ilkinji suratyňyzy goşuň',
   noImages: 'Heniz surat ýok',
-  galleryNote: 'Suratlar şu brauzerde saklanýar — kiçi faýllary ulanyň. Üýtgeşmeler derrew ulanylýar.',
+  galleryNote: 'Suratlar şu brauzerde saklanýar — kiçi faýllary ulanyň. Üýtgeşmeler derrew ulanylýar. Suraty pozman Galereýa sahypasyndan gizlemek üçin göz nyşanyny ulanyň.',
   confirmDeleteImage: 'Bu suraty pozmaly?',
   confirmResetGallery: 'Galereýany başlangyç suratlara dikeltmeli?',
   photoCategory: 'Kategoriýa',
+  showInGallery: 'Galereýada görkez',
+  hideFromGallery: 'Galereýadan gizle',
+  hiddenLabel: 'Gizlenen',
   pageImages: 'Sahypa suratlary',
   mainBanner: 'Baş sahypa — banner',
   aboutImage: 'Biz barada — surat',

@@ -25,8 +25,8 @@ export default function Gallery() {
     { id: 'events', label: 'gallery.filters.events' },
   ];
 
-  // Only show items that actually have an image (skip empty/placeholder slots).
-  const withImages = images.filter((img) => img.image);
+  // Only show items that have an image and are not hidden by the admin.
+  const withImages = images.filter((img) => img.image && !img.hidden);
   const filteredImages =
     selectedCategory === 'all' ? withImages : withImages.filter((img) => img.category === selectedCategory);
 
