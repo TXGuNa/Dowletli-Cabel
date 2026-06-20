@@ -7,6 +7,7 @@ export interface GalleryImage {
   id: string;
   image: string;            // URL or data URL
   category: GalleryCategory;
+  hidden?: boolean;         // when true, kept in admin but not shown on the public Gallery page
 }
 
 export const GALLERY_CATEGORIES: GalleryCategory[] = ['factory', 'products', 'events'];
@@ -39,6 +40,7 @@ export function loadGallery(): GalleryImage[] {
         id: g.id || `g-${Math.random().toString(36).slice(2, 8)}`,
         image: g.image,
         category: GALLERY_CATEGORIES.includes(g.category) ? g.category : 'factory',
+        hidden: Boolean(g.hidden),
       }));
   } catch {
     return defaultGallery();
@@ -59,5 +61,6 @@ export function makeEmptyImage(): GalleryImage {
     id: `g-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`,
     image: '',
     category: 'factory',
+    hidden: false,
   };
 }
