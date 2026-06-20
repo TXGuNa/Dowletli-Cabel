@@ -984,6 +984,16 @@ const SECTION_ROUTE: Record<string, string> = {
   contact: '/contact', booking: '/book',
 };
 
+// Pages the admin can preview from the dropdown.
+const PREVIEW_PAGES: { path: string; key: string }[] = [
+  { path: '/', key: 'home' },
+  { path: '/about', key: 'about' },
+  { path: '/products', key: 'products' },
+  { path: '/gallery', key: 'gallery' },
+  { path: '/contact', key: 'contact' },
+  { path: '/book', key: 'booking' },
+];
+
 // Find the given text inside the (same-origin) preview iframe, scroll to it and
 // flash a temporary outline. Best-effort: matches the start of the saved text.
 function flashInPreview(doc: Document | null | undefined, text: string) {
@@ -1486,9 +1496,21 @@ export default function Admin() {
                         <span className="w-3 h-3 rounded-full bg-amber-300" />
                         <span className="w-3 h-3 rounded-full bg-green-300" />
                       </span>
-                      <span className="text-xs font-medium text-brand-slate ml-2">
-                        {tr('livePreview')} · {LANG_LABELS[lang]}
+                      <span className="text-xs font-medium text-brand-slate ml-2 hidden xl:inline">
+                        {tr('livePreview')}
                       </span>
+                      <select
+                        value={previewSrc.split('?')[0] || '/'}
+                        onChange={(e) => {
+                          const p = e.target.value;
+                          setPreviewSrc(p === '/' ? `/?lang=${lang}` : `${p}?lang=${lang}`);
+                        }}
+                        className="ml-2 bg-white border border-brand-border rounded-lg px-2 py-1 text-xs font-semibold text-brand-ink focus:border-brand-ink focus:outline-none cursor-pointer"
+                      >
+                        {PREVIEW_PAGES.map((p) => (
+                          <option key={p.path} value={p.path}>{fieldLabel(p.key, lang)}</option>
+                        ))}
+                      </select>
                       <div className="ml-auto flex items-center gap-1">
                         <button
                           onClick={() => setPreviewKey((k) => k + 1)}
