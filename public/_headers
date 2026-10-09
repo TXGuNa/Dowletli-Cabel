@@ -1,0 +1,8 @@
+# Security headers for every static file served by Cloudflare (Workers static assets).
+# The admin's live preview frames the site from the same origin, so 'self' is allowed.
+/*
+  X-Frame-Options: SAMEORIGIN
+  Content-Security-Policy: frame-ancestors 'self'
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=()

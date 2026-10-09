@@ -1,12 +1,12 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import {
-  type SiteSettings, SETTINGS_EVENT, DEFAULT_SETTINGS,
-  loadSettings, persistSettings,
+  type SiteSettings, SETTINGS_EVENT,
+  loadSettings, persistSettings, defaultSettings,
 } from './settingsStore';
 
 interface SettingsContextValue {
   settings: SiteSettings;
-  setSetting: (key: keyof SiteSettings, value: string) => void;
+  setSetting: <K extends keyof SiteSettings>(key: K, value: SiteSettings[K]) => void;
   setSettings: (next: SiteSettings) => void;
   resetSettings: () => void;
 }
@@ -39,7 +39,7 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
         persistSettings(next);
       },
       resetSettings: () => {
-        const def = { ...DEFAULT_SETTINGS };
+        const def = defaultSettings();
         setSettingsState(def);
         persistSettings(def);
       },

@@ -29,7 +29,7 @@ export default function ProductCard({ title, description, image, category, specs
             <ImageOff size={28} strokeWidth={1.5} />
           </div>
         )}
-        <span className="absolute top-4 left-4 text-[11px] font-semibold tracking-[0.14em] uppercase text-brand-primary bg-white/80 backdrop-blur px-3 py-1 rounded-full border border-white/70 shadow-soft">
+        <span className="absolute top-4 left-4 text-[11px] font-semibold tracking-[0.14em] uppercase text-brand-primary bg-brand-surface/80 backdrop-blur px-3 py-1 rounded-btn border border-glass shadow-soft">
           {category}
         </span>
       </div>
@@ -42,7 +42,7 @@ export default function ProductCard({ title, description, image, category, specs
         </div>
         <p className="text-brand-text text-sm mb-5 leading-relaxed line-clamp-3">{description}</p>
 
-        <ul className="mt-auto space-y-2 border-t border-white/60 pt-4">
+        <ul className="mt-auto space-y-2 border-t border-glass pt-4">
           {specs.map((spec, i) => (
             <li key={i} className="flex gap-3 items-baseline text-sm text-brand-text">
               <span className="text-brand-primary font-mono text-xs shrink-0">0{i + 1}</span>

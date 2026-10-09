@@ -3,9 +3,12 @@ import { Link } from 'react-router-dom';
 import Hero from '../components/Hero';
 import { ShieldCheck, Globe2, Zap, ArrowUpRight } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useSettings } from '../content/SettingsContext';
 
 export default function Home() {
   const { t } = useTranslation();
+  const { settings } = useSettings();
+  const show = settings.sections;
 
   const features = [
     { icon: ShieldCheck, key: 'quality' },
@@ -18,14 +21,15 @@ export default function Home() {
       <Hero />
 
       {/* Features — glass cards */}
+      {show.homeFeatures && (
       <section className="section-padding relative overflow-hidden">
         <div className="absolute top-0 right-0 w-[420px] h-[420px] bg-brand-cyan/10 rounded-full blur-[130px] pointer-events-none" />
         <div className="container mx-auto relative">
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-14 gap-6">
             <h2 className="text-3xl md:text-5xl font-extrabold text-brand-ink tracking-tight max-w-2xl">
-              {t('home.manufacturing.title')}
+              {t('home.featuresTitle')}
             </h2>
-            <span className="eyebrow">{t('brand.tagline')}</span>
+            <span className="eyebrow">{t('home.featuresEyebrow')}</span>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -39,7 +43,7 @@ export default function Home() {
                 className="glass rounded-3xl p-8 group hover:-translate-y-1 transition-transform duration-300"
               >
                 <div className="flex items-center justify-between mb-6">
-                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-brand-primary to-brand-cyan flex items-center justify-center text-white shadow-soft">
+                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-brand-primary to-brand-cyan flex items-center justify-center text-brand-on-primary shadow-soft">
                     <feature.icon size={24} />
                   </div>
                   <span className="text-sm font-mono text-brand-slate">0{index + 1}</span>
@@ -54,7 +58,10 @@ export default function Home() {
         </div>
       </section>
 
+      )}
+
       {/* Manufacturing */}
+      {show.homeManufacturing && (
       <section className="section-padding relative overflow-hidden">
         <div className="absolute bottom-0 left-0 w-[440px] h-[440px] bg-brand-primary/10 rounded-full blur-[140px] pointer-events-none" />
         <div className="container mx-auto relative">
@@ -75,11 +82,11 @@ export default function Home() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="glass rounded-2xl py-6 px-5">
-                  <h4 className="text-3xl font-extrabold tracking-tight text-gradient">24/7</h4>
+                  <h4 className="text-3xl font-extrabold tracking-tight text-gradient">{t('home.manufacturing.stats.cycleValue')}</h4>
                   <p className="text-brand-slate text-sm mt-1">{t('home.manufacturing.stats.cycle')}</p>
                 </div>
                 <div className="glass rounded-2xl py-6 px-5">
-                  <h4 className="text-3xl font-extrabold tracking-tight text-gradient">100%</h4>
+                  <h4 className="text-3xl font-extrabold tracking-tight text-gradient">{t('home.manufacturing.stats.qualityValue')}</h4>
                   <p className="text-brand-slate text-sm mt-1">{t('home.manufacturing.stats.quality')}</p>
                 </div>
               </div>
@@ -89,12 +96,12 @@ export default function Home() {
               initial={{ opacity: 0, scale: 0.98 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
-              className="order-1 lg:order-2 relative p-2 glass rounded-[1.75rem]"
+              className="order-1 lg:order-2 relative p-2 glass rounded-4xl"
             >
               <div className="relative aspect-[4/5] rounded-3xl overflow-hidden">
                 <img
-                  src="/assets/factory-interior-new.jpg"
-                  alt="Factory Interior"
+                  src={settings.homeImage || '/assets/factory-interior-new.jpg'}
+                  alt={t('home.manufacturing.label')}
                   className="w-full h-full object-cover"
                 />
               </div>
@@ -107,22 +114,25 @@ export default function Home() {
         </div>
       </section>
 
+      )}
+
       {/* CTA — gradient glass */}
+      {show.homeCta && (
       <section className="px-6 pb-24">
         <div className="container mx-auto">
-          <div className="relative overflow-hidden rounded-[2rem] px-8 py-16 md:px-16 md:py-20 text-center bg-gradient-to-br from-brand-primary via-brand-blue to-brand-cyan">
+          <div className="relative overflow-hidden rounded-5xl px-8 py-16 md:px-16 md:py-20 text-center bg-gradient-to-br from-brand-primary via-brand-blue to-brand-cyan">
             <div className="absolute inset-0 bg-hero-grid bg-[size:40px_40px] opacity-20" />
-            <div className="absolute -top-16 -right-10 w-72 h-72 bg-white/20 rounded-full blur-3xl animate-drift" />
+            <div className="absolute -top-16 -right-10 w-72 h-72 bg-brand-on-primary/20 rounded-full blur-3xl animate-drift" />
             <div className="relative z-10 max-w-3xl mx-auto">
-              <h2 className="text-3xl md:text-5xl font-extrabold text-white mb-5 tracking-tight">
+              <h2 className="text-3xl md:text-5xl font-extrabold text-brand-on-primary mb-5 tracking-tight">
                 {t('home.cta.title')}
               </h2>
-              <p className="text-white/85 text-lg mb-10 max-w-xl mx-auto">
+              <p className="text-brand-on-primary/85 text-lg mb-10 max-w-xl mx-auto">
                 {t('home.cta.subtitle')}
               </p>
               <Link
                 to="/contact"
-                className="inline-flex items-center justify-center gap-2 bg-white text-brand-primary px-8 py-4 rounded-full font-bold hover:-translate-y-0.5 hover:shadow-lg transition-all group"
+                className="inline-flex items-center justify-center gap-2 bg-brand-on-primary text-brand-primary px-8 py-4 rounded-btn font-bold hover:-translate-y-0.5 hover:shadow-lg transition-all group"
               >
                 {t('home.cta.button')}
                 <ArrowUpRight size={18} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
@@ -131,6 +141,7 @@ export default function Home() {
           </div>
         </div>
       </section>
+      )}
     </div>
   );
 }

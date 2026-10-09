@@ -3,6 +3,7 @@ import en from '../locales/en.json';
 import ru from '../locales/ru.json';
 import tkm from '../locales/tkm.json';
 import type { Lang } from './detectLanguage';
+import { readCache, removeCache, writeCache } from './cache';
 
 export type Json = string | number | boolean | null | Json[] | { [k: string]: Json };
 export type LangContent = Record<string, Json>;
@@ -15,13 +16,11 @@ export const LANG_LABELS: Record<Lang, string> = {
   tkm: 'Türkmen',
 };
 
-const STORAGE_KEY = 'dowletli_content_v1';
+export const CONTENT_KEY = 'dowletli_content_v1';
+export const CONTENT_EVENT = 'dowletli-content';
 
-export const DEFAULT_CONTENT: AllContent = {
-  en: en as LangContent,
-  ru: ru as LangContent,
-  tkm: tkm as LangContent,
-};
+// Deep copies, frozen in spirit: never handed to i18next (which mutates its bundles).
+export const DEFAULT_CONTENT: AllContent = JSON.parse(JSON.stringify({ en, ru, tkm }));
 
 function clone<T>(v: T): T {
   return JSON.parse(JSON.stringify(v));
@@ -45,38 +44,36 @@ function deepMerge(base: Json, override: Json): Json {
   return override !== undefined ? override : base;
 }
 
-export function loadContent(): AllContent {
+// Fill the full key set from the built-in defaults; stored values win.
+export function mergeContent(stored: unknown): AllContent {
   const merged = clone(DEFAULT_CONTENT);
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) {
-      const stored = JSON.parse(raw) as Partial<AllContent>;
-      for (const lang of LANGS) {
-        if (stored[lang]) {
-          merged[lang] = deepMerge(DEFAULT_CONTENT[lang], stored[lang] as Json) as LangContent;
-        }
+  if (stored && typeof stored === 'object') {
+    const s = stored as Partial<AllContent>;
+    for (const lang of LANGS) {
+      if (s[lang] && typeof s[lang] === 'object') {
+        merged[lang] = deepMerge(DEFAULT_CONTENT[lang], s[lang] as Json) as LangContent;
       }
     }
-  } catch {
-    /* ignore corrupt storage */
   }
   return merged;
 }
 
-export function persistContent(content: AllContent) {
+export function loadContent(): AllContent {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(content));
+    const raw = readCache(CONTENT_KEY);
+    if (raw) return mergeContent(JSON.parse(raw));
   } catch {
-    /* storage may be full / disabled */
+    /* ignore corrupt storage */
   }
+  return clone(DEFAULT_CONTENT);
+}
+
+export function persistContent(content: AllContent) {
+  writeCache(CONTENT_KEY, JSON.stringify(content));
 }
 
 export function clearStoredContent() {
-  try {
-    localStorage.removeItem(STORAGE_KEY);
-  } catch {
-    /* ignore */
-  }
+  removeCache(CONTENT_KEY);
 }
 
 // Push the content into i18next so every t('...') call reflects edits live.

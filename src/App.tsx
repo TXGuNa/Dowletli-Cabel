@@ -8,13 +8,15 @@ import Products from './pages/Products';
 import Contact from './pages/Contact';
 import BookConsultation from './pages/BookConsultation';
 import Gallery from './pages/Gallery';
+import NotFound from './pages/NotFound';
 // Admin is heavy and admin-only — load it on demand so public visitors
 // don't download it (smaller first paint, less initial white screen).
-const Admin = lazy(() => import('./pages/Admin'));
+const Admin = lazy(() => import('./admin/AdminApp'));
 import { ContentProvider } from './content/ContentContext';
 import { ProductsProvider } from './content/ProductsContext';
 import { GalleryProvider } from './content/GalleryContext';
 import { SettingsProvider } from './content/SettingsContext';
+import { ThemeManager, SeoManager, PreviewBridge } from './content/SiteEffects';
 
 function Layout() {
   const location = useLocation();
@@ -22,6 +24,9 @@ function Layout() {
 
   return (
     <div className="bg-brand-bg min-h-screen text-brand-text font-sans selection:bg-brand-primary/15 selection:text-brand-ink">
+      <ThemeManager />
+      <SeoManager />
+      <PreviewBridge />
       {!isAdmin && <Header />}
       <main>
         <Routes>
@@ -32,13 +37,14 @@ function Layout() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/book" element={<BookConsultation />} />
           <Route
-            path="/admin"
+            path="/admin/*"
             element={
               <Suspense fallback={<div className="min-h-screen bg-brand-bg" />}>
                 <Admin />
               </Suspense>
             }
           />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
       {!isAdmin && <Footer />}

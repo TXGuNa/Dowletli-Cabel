@@ -4,10 +4,11 @@
     "about": "Biz Barada",
     "products": "Önümler",
     "gallery": "Galereýa",
-    "contact": "Habarlaşmak"
+    "contact": "Habarlaşmak",
+    "book": "Maslahat Almak"
   },
   "gallery": {
-    "title": "Biz <1>Galereýa</1>",
+    "title": "Biziň <1>Galereýamyz</1>",
     "subtitle": "Döwrebap önümçilik toplumymyzy we ýokary hilli önümlerimizi görüň.",
     "filters": {
       "all": "Hemmesi",
@@ -30,12 +31,16 @@
     "stat3label": "Önümçilik"
   },
   "home": {
+    "featuresEyebrow": "Optiki süýümli kabel",
+    "featuresTitle": "Mary şäherindäki döwrebap önümçilik toplumy",
     "manufacturing": {
       "label": "Önümçilik",
       "title": "Mary şäherindäki döwrebap önümçilik toplumy",
       "description": "Döwletli her bir kabeliň senagat standartlaryndan ýokary bolmagyny üpjün etmek üçin iň kämil ekstruziýa tehnologiýasyny we awtomatlaşdyrylan hil gözegçilik ulgamlaryny ulanýar.",
       "stats": {
+        "cycleValue": "24/7",
         "cycle": "Önümçilik tapgyry",
+        "qualityValue": "100%",
         "quality": "Hil barlagyndan geçen"
       },
       "badge": {
@@ -64,7 +69,8 @@
     }
   },
   "products": {
-    "title": "Bizim <1>Önümlerimiz</1>",
+    "eyebrow": "Optiki süýümli kabel",
+    "title": "Biziň <1>Önümlerimiz</1>",
     "subtitle": "Dünýä bilen birikmek üçin niýetlenen ýokary öndürijilikli optiki süýümli kabellerimizi öwreniň.",
     "viewDetails": "Giňişleýin",
     "categories": {
@@ -112,7 +118,7 @@
         ]
       },
       "armoredSoil": {
-        "title": "Topraga gömlýän sowutlanan kabel",
+        "title": "Topraga gömülýän sowutlanan kabel",
         "description": "Ähli kategoriýadaky topraga, estakadalara we köprülere gömmek üçin niýetlenen magistral optiki kabel.",
         "specs": [
           "Sowut - sinklenen polat sim gatlagy",
@@ -148,7 +154,9 @@
       "send": "Ugratmak",
       "sending": "Ugradylýar...",
       "success": "Ugradyldy!",
-      "sent": "Sag boluň! Tiz wagtda siziň bilen habarlaşarys."
+      "sent": "Sag boluň! Tiz wagtda siziň bilen habarlaşarys.",
+      "error": "Habaryňyzy iberip bolmady. Gaýtadan synanyşyň ýa-da biz bilen telefon ýa-da e-poçta arkaly habarlaşyň.",
+      "hint": "Adatça 24 sagadyň dowamynda jogap berýäris."
     },
     "info": {
       "address": "Türkmenistan, Mary welaýaty, Mary - Aşgabat ýolunyñ 16-njy kilometrligi",
@@ -193,7 +201,8 @@
       "expertDesc": "Inžener toparymyza göni elýeterlilik.",
       "customTitle": "Aýratyn çözgütler",
       "customDesc": "Taslamaňyz üçin niýetlenen önümçilik aýratynlyklary."
-    }
+    },
+    "error": "Ýazylyşyňyzy iberip bolmady. Gaýtadan synanyşyň ýa-da biz bilen telefon ýa-da e-poçta arkaly habarlaşyň."
   },
   "footer": {
     "company": "Kompaniýa",
@@ -201,10 +210,20 @@
     "technology": "Tehnologiýa",
     "careers": "Kariýera",
     "news": "Täzelikler",
-    "rights": "Ähli hukuklar goralan."
+    "rights": "Ähli hukuklar goralan.",
+    "adminLink": "Admin"
   },
   "brand": {
     "name": "DÖWLETLI CABLE",
     "tagline": "Optiki süýümli kabel"
+  },
+  "seo": {
+    "title": "DÖWLETLI | Optiki kabel",
+    "description": "Döwletli — Mary şäherindäki optiki süýüm kabel öndürijisi: öz-özüni göteriji, sowutly, FTTH we sekiz görnüşli aragatnaşyk kabelleri."
+  },
+  "notFound": {
+    "title": "Sahypa tapylmady",
+    "text": "Gözleýän sahypaňyz ýok ýa-da başga ýere geçirildi.",
+    "button": "Baş sahypa"
   }
 }

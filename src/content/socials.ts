@@ -19,3 +19,22 @@ export const SOCIAL_PLATFORMS: { id: string; label: string }[] = [
 export function platformLabel(id: string): string {
   return SOCIAL_PLATFORMS.find((p) => p.id === id)?.label || id;
 }
+
+// Turn what the admin typed into a working link:
+// email -> mailto:, phone -> tel:, WhatsApp number -> wa.me, bare domain -> https://
+export function socialHref(platform: string, raw: string): string {
+  const v = raw.trim();
+  if (!v) return '';
+  if (/^(https?:|mailto:|tel:|viber:|skype:)/i.test(v)) return v;
+  if (platform === 'email' || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) return `mailto:${v}`;
+  const digits = v.replace(/[^\d+]/g, '');
+  if (platform === 'phone') return `tel:${digits}`;
+  if (platform === 'whatsapp' && /^\+?\d{6,}$/.test(digits)) return `https://wa.me/${digits.replace('+', '')}`;
+  if (platform === 'telegram' && /^@?\w{4,}$/.test(v)) return `https://t.me/${v.replace('@', '')}`;
+  return `https://${v.replace(/^\/+/, '')}`;
+}
+
+// mailto:/tel: links open the mail/phone app; everything else in a new tab.
+export function opensNewTab(href: string): boolean {
+  return /^https?:/i.test(href);
+}

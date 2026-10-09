@@ -4,7 +4,8 @@
     "about": "About Us",
     "products": "Products",
     "gallery": "Our Gallery",
-    "contact": "Contact"
+    "contact": "Contact",
+    "book": "Book Consultation"
   },
   "gallery": {
     "title": "Our <1>Gallery</1>",
@@ -30,12 +31,16 @@
     "stat3label": "Production"
   },
   "home": {
+    "featuresEyebrow": "Optical Fiber Cable",
+    "featuresTitle": "State-of-the-art Production Facility in Mary, Turkmenistan",
     "manufacturing": {
       "label": "Manufacturing",
       "title": "State-of-the-art Production Facility in Mary, Turkmenistan",
       "description": "Döwletli utilizes cutting-edge extrusion technology and automated quality control systems to ensure every meter of cable exceeds industry standards.",
       "stats": {
+        "cycleValue": "24/7",
         "cycle": "Production Cycle",
+        "qualityValue": "100%",
         "quality": "Quality Tested"
       },
       "badge": {
@@ -64,6 +69,7 @@
     }
   },
   "products": {
+    "eyebrow": "Optical Fiber Cable",
     "title": "Our <1>Products</1>",
     "subtitle": "Explore our range of high-performance optical fiber cables designed for global connectivity.",
     "viewDetails": "View Specs",
@@ -148,7 +154,9 @@
       "send": "Send Message",
       "sending": "Sending...",
       "success": "Message Sent!",
-      "sent": "Thank you! We will get back to you shortly."
+      "sent": "Thank you! We will get back to you shortly.",
+      "error": "Could not send your message. Please try again or contact us by phone or email.",
+      "hint": "We usually reply within 24 hours."
     },
     "info": {
       "address": "Turkmenistan, Mary velayat, 16th km of Mary - Ashgabat highway",
@@ -193,7 +201,8 @@
       "expertDesc": "Direct access to our engineering team.",
       "customTitle": "Custom Solutions",
       "customDesc": "Tailored manufacturing specs for your project."
-    }
+    },
+    "error": "Could not send your booking. Please try again or contact us by phone or email."
   },
   "footer": {
     "company": "Company",
@@ -201,10 +210,20 @@
     "technology": "Technology",
     "careers": "Careers",
     "news": "News & Events",
-    "rights": "All Rights Reserved."
+    "rights": "All Rights Reserved.",
+    "adminLink": "Admin"
   },
   "brand": {
     "name": "DÖWLETLI CABLE",
     "tagline": "Optical Fiber Cable"
+  },
+  "seo": {
+    "title": "DÖWLETLI | Optic Cable",
+    "description": "Döwletli — optical fiber cable manufacturer in Mary, Turkmenistan: self-supporting, armored duct, FTTH drop and figure-8 cables for telecom networks."
+  },
+  "notFound": {
+    "title": "Page not found",
+    "text": "The page you are looking for does not exist or has been moved.",
+    "button": "Back to home"
   }
 }

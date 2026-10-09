@@ -7,6 +7,25 @@
     <meta name="theme-color" content="#F3F7FF" />
     <title>DÖWLETLI | Optic Cable</title>
 
+    <!-- Last theme's background + logo for the splash (see src/content/themes.ts) -->
+    <script>
+      try {
+        var boot = JSON.parse(localStorage.getItem('dowletli_boot') || '{}');
+        if (location.pathname.indexOf('/admin') !== 0 && !/[?&]preview/.test(location.search)) {
+          if (/^#[0-9a-fA-F]{6}$/.test(boot.bg || '')) document.documentElement.style.setProperty('--boot-bg', boot.bg);
+          if (/^#[0-9a-fA-F]{6}$/.test(boot.primary || '')) document.documentElement.style.setProperty('--boot-accent', boot.primary);
+        }
+        window.__DOWLETLI_LOGO__ = typeof boot.logo === 'string' && /^(\/|https:)/.test(boot.logo) ? boot.logo : '';
+      } catch (e) {}
+    </script>
+
+    <!-- Start loading the published site content right away (used by src/content/siteSync.ts) -->
+    <script>
+      window.__DOWLETLI_SITE__ = fetch('/api/site', { cache: 'no-store' })
+        .then(function (r) { return r.status === 200 ? r.json() : null; })
+        .catch(function () { return null; });
+    </script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -15,8 +34,9 @@
     />
 
     <style>
-      /* Paint the brand background immediately so the first frame is never white */
-      html, body { margin: 0; background: #F3F7FF; }
+      /* Paint the brand background immediately so the first frame is never white.
+         --boot-bg / --boot-accent come from the last theme seen (script below). */
+      html, body { margin: 0; background: var(--boot-bg, #F3F7FF); }
 
       /* Boot splash shown until React mounts and replaces #root */
       #app-splash {
@@ -27,7 +47,7 @@
         align-items: center;
         justify-content: center;
         gap: 18px;
-        background: #F3F7FF;
+        background: var(--boot-bg, #F3F7FF);
         z-index: 9999;
       }
       #app-splash img {
@@ -41,7 +61,7 @@
         height: 30px;
         border-radius: 9999px;
         border: 3px solid rgba(37, 99, 235, 0.18);
-        border-top-color: #2563EB;
+        border-top-color: var(--boot-accent, #2563EB);
         animation: splash-spin 0.8s linear infinite;
       }
       @keyframes splash-spin { to { transform: rotate(360deg); } }
@@ -57,7 +77,8 @@
   <body>
     <div id="root">
       <div id="app-splash">
-        <img src="/assets/logo.png" alt="Döwletli" />
+        <img id="app-splash-logo" src="/assets/logo.png" alt="Döwletli" />
+        <script>if (window.__DOWLETLI_LOGO__) document.getElementById('app-splash-logo').src = window.__DOWLETLI_LOGO__;</script>
         <div class="ring"></div>
       </div>
     </div>

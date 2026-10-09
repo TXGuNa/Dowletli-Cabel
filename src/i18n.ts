@@ -5,6 +5,7 @@ import en from './locales/en.json';
 import ru from './locales/ru.json';
 import tkm from './locales/tkm.json';
 import { detectLanguage } from './content/detectLanguage';
+import { IS_PREVIEW } from './content/cache';
 
 const LANG_KEY = 'dowletli_lang';
 
@@ -26,13 +27,17 @@ function initialLanguage(): string {
   return detectLanguage();
 }
 
+// i18next merges edits INTO its resource objects, so give it copies — the
+// imported JSON must stay pristine because it is the "reset to defaults" source.
+const copy = <T,>(v: T): T => JSON.parse(JSON.stringify(v));
+
 i18n
   .use(initReactI18next)
   .init({
     resources: {
-      en: { translation: en },
-      ru: { translation: ru },
-      tkm: { translation: tkm },
+      en: { translation: copy(en) },
+      ru: { translation: copy(ru) },
+      tkm: { translation: copy(tkm) },
     },
     lng: initialLanguage(),
     fallbackLng: 'en',
@@ -45,8 +50,16 @@ i18n
 // admin preview (loaded with ?lang=…), so the preview can't change the real site.
 i18n.on('languageChanged', (lng) => {
   try {
-    if (new URLSearchParams(window.location.search).has('lang')) return;
+    const params = new URLSearchParams(window.location.search);
+    if (IS_PREVIEW) return; // the admin's preview must not change the visitor language
     localStorage.setItem(LANG_KEY, lng);
+    // A ?lang= link set the first language; after a manual switch, drop it so a
+    // reload keeps the visitor's choice.
+    if (params.has('lang') && params.get('lang') !== lng) {
+      params.delete('lang');
+      const qs = params.toString();
+      window.history.replaceState(window.history.state, '', window.location.pathname + (qs ? `?${qs}` : '') + window.location.hash);
+    }
   } catch {
     /* ignore */
   }

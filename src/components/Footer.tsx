@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Mail, MapPin, Phone } from 'lucide-react';
 import { useSettings } from '../content/SettingsContext';
 import SocialIcon from './SocialIcon';
+import { socialHref, opensNewTab, platformLabel } from '../content/socials';
 
 export default function Footer() {
   const { t } = useTranslation();
@@ -15,7 +16,7 @@ export default function Footer() {
           {/* Brand */}
           <div className="lg:col-span-2">
             <div className="flex items-center gap-2.5 mb-5">
-              <img src="/assets/logo.png" alt="Döwletli Logo" className="h-9 w-9 object-contain" />
+              <img src={settings.logoImage || '/assets/logo.png'} alt={settings.brandName} className="h-9 w-9 object-contain" />
               <span className="text-lg font-extrabold tracking-tight text-brand-ink">
                 {settings.brandName}
               </span>
@@ -28,11 +29,12 @@ export default function Footer() {
                 {settings.socials.filter((s) => s.url.trim()).map((s) => (
                   <a
                     key={s.id}
-                    href={s.url}
-                    target="_blank"
+                    href={socialHref(s.platform, s.url)}
+                    target={opensNewTab(socialHref(s.platform, s.url)) ? '_blank' : undefined}
                     rel="noreferrer"
-                    title={s.platform}
-                    className="w-10 h-10 rounded-full border border-brand-border flex items-center justify-center text-brand-slate hover:bg-brand-ink hover:text-white hover:border-brand-ink transition-all"
+                    title={platformLabel(s.platform)}
+                    aria-label={platformLabel(s.platform)}
+                    className="w-10 h-10 rounded-full border border-brand-border flex items-center justify-center text-brand-slate hover:bg-brand-ink hover:text-brand-bg hover:border-brand-ink transition-all"
                   >
                     <SocialIcon platform={s.platform} size={17} />
                   </a>
@@ -76,8 +78,10 @@ export default function Footer() {
         </div>
 
         <div className="border-t border-brand-border pt-6 flex flex-col sm:flex-row justify-between items-center gap-2 text-brand-slate text-sm">
-          <p>&copy; 2026 {settings.brandName}. {t('footer.rights')}</p>
-          <Link to="/admin" className="hover:text-brand-ink transition-colors">Admin</Link>
+          <p>&copy; {new Date().getFullYear()} {settings.brandName}. {t('footer.rights')}</p>
+          {settings.sections.footerAdminLink && (
+            <Link to="/admin" className="hover:text-brand-ink transition-colors">{t('footer.adminLink')}</Link>
+          )}
         </div>
       </div>
     </footer>
