@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { addSubmission } from '../content/submissionsStore';
 import { useSettings } from '../content/SettingsContext';
 import SocialIcon from '../components/SocialIcon';
+import { socialHref, opensNewTab, platformLabel } from '../content/socials';
 
 function Field({
   label, type, id, textarea,
@@ -35,17 +36,28 @@ export default function Contact() {
   const { settings } = useSettings();
   const socials = settings.socials.filter((s) => s.url.trim());
   const [sent, setSent] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [failed, setFailed] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (sending) return;
     const form = e.target as HTMLFormElement;
     const name = (form.querySelector('#name') as HTMLInputElement)?.value.trim() || '';
     const email = (form.querySelector('#email') as HTMLInputElement)?.value.trim() || '';
     const message = (form.querySelector('#message') as HTMLTextAreaElement)?.value.trim() || '';
-    addSubmission({ type: 'contact', name, email, message });
-    setSent(true);
-    form.reset();
-    setTimeout(() => setSent(false), 5000);
+    setSending(true);
+    setFailed(false);
+    try {
+      await addSubmission({ type: 'contact', name, email, message });
+      setSent(true);
+      form.reset();
+      setTimeout(() => setSent(false), 5000);
+    } catch {
+      setFailed(true); // keep the typed text so the visitor can retry
+    } finally {
+      setSending(false);
+    }
   };
 
   return (
@@ -98,11 +110,12 @@ export default function Contact() {
                 {socials.map((s) => (
                   <a
                     key={s.id}
-                    href={s.url}
-                    target="_blank"
+                    href={socialHref(s.platform, s.url)}
+                    target={opensNewTab(socialHref(s.platform, s.url)) ? '_blank' : undefined}
                     rel="noreferrer"
-                    title={s.platform}
-                    className="w-10 h-10 rounded-full border border-brand-border flex items-center justify-center text-brand-slate hover:bg-brand-ink hover:text-white hover:border-brand-ink transition-all"
+                    title={platformLabel(s.platform)}
+                    aria-label={platformLabel(s.platform)}
+                    className="w-10 h-10 rounded-full border border-brand-border flex items-center justify-center text-brand-slate hover:bg-brand-ink hover:text-brand-bg hover:border-brand-ink transition-all"
                   >
                     <SocialIcon platform={s.platform} size={17} />
                   </a>
@@ -122,7 +135,7 @@ export default function Contact() {
 
               <h2 className="text-xl font-bold text-brand-ink mb-1">{t('contact.sendMessage')}</h2>
               <p className="text-brand-slate text-sm mb-8 flex items-center gap-1.5">
-                <Clock size={14} /> {t('contact.form.sent')}
+                <Clock size={14} /> {t('contact.form.hint')}
               </p>
 
               <AnimatePresence mode="wait">
@@ -134,7 +147,7 @@ export default function Contact() {
                     exit={{ opacity: 0 }}
                     className="flex flex-col items-center text-center py-12"
                   >
-                    <div className="w-16 h-16 rounded-full bg-gradient-to-br from-brand-primary to-brand-cyan text-white flex items-center justify-center mb-5 shadow-soft">
+                    <div className="w-16 h-16 rounded-full bg-gradient-to-br from-brand-primary to-brand-cyan text-brand-on-primary flex items-center justify-center mb-5 shadow-soft">
                       <CheckCircle2 size={32} />
                     </div>
                     <h3 className="text-xl font-bold text-brand-ink mb-2">{t('contact.form.success')}</h3>
@@ -153,8 +166,14 @@ export default function Contact() {
                     <Field label={t('contact.form.email')} type="email" id="email" />
                     <Field label={t('contact.form.message')} id="message" textarea />
 
-                    <button type="submit" className="btn-primary w-full group">
-                      <span>{t('contact.form.send')}</span>
+                    {failed && (
+                      <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-xl px-4 py-3">
+                        {t('contact.form.error')}
+                      </p>
+                    )}
+
+                    <button type="submit" disabled={sending} className="btn-primary w-full group disabled:opacity-60">
+                      <span>{sending ? t('contact.form.sending') : t('contact.form.send')}</span>
                       <ArrowUpRight size={18} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
                     </button>
                   </motion.form>

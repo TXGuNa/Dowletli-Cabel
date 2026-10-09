@@ -29,7 +29,7 @@ export default function About() {
             initial={{ y: 24, opacity: 0 }}
             whileInView={{ y: 0, opacity: 1 }}
             viewport={{ once: true }}
-            className="glass rounded-[2rem] p-10 md:p-14 max-w-4xl"
+            className="glass rounded-5xl p-10 md:p-14 max-w-4xl"
           >
             <p className="text-2xl md:text-4xl font-medium text-brand-ink leading-[1.3] tracking-tight">
               “<span className="text-gradient">{t('about.mission')}</span>”
@@ -56,7 +56,7 @@ export default function About() {
               initial={{ y: 24, opacity: 0 }}
               whileInView={{ y: 0, opacity: 1 }}
               viewport={{ once: true }}
-              className="relative p-2 glass rounded-[1.75rem]"
+              className="relative p-2 glass rounded-4xl"
             >
               <div className="relative aspect-[4/3] rounded-3xl overflow-hidden">
                 <img

@@ -21,10 +21,10 @@ function FiberLines() {
     >
       <defs>
         <linearGradient id="fiber" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0%" stopColor="#2563EB" stopOpacity="0" />
-          <stop offset="35%" stopColor="#2563EB" stopOpacity="0.5" />
-          <stop offset="65%" stopColor="#06B6D4" stopOpacity="0.55" />
-          <stop offset="100%" stopColor="#14B8A6" stopOpacity="0" />
+          <stop offset="0%" style={{ stopColor: 'rgb(var(--c-primary))' }} stopOpacity="0" />
+          <stop offset="35%" style={{ stopColor: 'rgb(var(--c-primary))' }} stopOpacity="0.5" />
+          <stop offset="65%" style={{ stopColor: 'rgb(var(--c-cyan))' }} stopOpacity="0.55" />
+          <stop offset="100%" style={{ stopColor: 'rgb(var(--c-teal))' }} stopOpacity="0" />
         </linearGradient>
       </defs>
       {paths.map((d, i) => (
@@ -71,7 +71,7 @@ export default function Hero() {
           transition={{ duration: 0.6 }}
           className="mb-8"
         >
-          <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass text-sm font-semibold text-brand-primary">
+          <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-btn glass text-sm font-semibold text-brand-primary">
             <Sparkles size={15} />
             {t('brand.tagline')}
           </span>
@@ -118,19 +118,20 @@ export default function Hero() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.25 }}
-          className="mt-16 relative rounded-[1.75rem] p-2 glass"
+          className="mt-16 relative rounded-4xl p-2 glass"
         >
           <div className="relative rounded-3xl overflow-hidden aspect-[16/10] md:aspect-[21/9]">
             <img
               src={settings.heroImage || '/assets/hero-bg.png'}
-              alt="Fiber Optic Manufacturing"
+              alt={settings.brandName}
               className="w-full h-full object-cover"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-brand-ink/25 via-transparent to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-brand-overlay/25 via-transparent to-transparent" />
           </div>
         </motion.div>
 
         {/* Glass stats */}
+        {settings.sections.heroStats && (
         <div className="mt-12 grid grid-cols-3 gap-2.5 sm:gap-4">
           {stats.map((s, i) => (
             <div key={i} className="glass rounded-2xl px-2 py-5 sm:px-5 sm:py-6 text-center">
@@ -139,6 +140,7 @@ export default function Hero() {
             </div>
           ))}
         </div>
+        )}
       </div>
     </section>
   );

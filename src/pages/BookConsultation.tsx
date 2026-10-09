@@ -3,9 +3,11 @@ import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { Calendar as CalendarIcon, Clock, CheckCircle2 } from 'lucide-react';
 import { addSubmission } from '../content/submissionsStore';
+import { useSettings } from '../content/SettingsContext';
 
 export default function BookConsultation() {
   const { t, i18n } = useTranslation();
+  const { settings } = useSettings();
   const [step, setStep] = useState(1);
   const [selectedService, setSelectedService] = useState('');
   const [selectedDate, setSelectedDate] = useState('');
@@ -20,30 +22,43 @@ export default function BookConsultation() {
     { id: 'tour', icon: '🏭' },
   ];
 
-  const timeSlots = ['09:00', '10:00', '11:00', '14:00', '15:00', '16:00'];
+  const timeSlots = Array.from(new Set(settings.bookingTimes.map((x) => x.trim()).filter((x) => /^([01]?\d|2[0-3]):[0-5]\d$/.test(x))));
 
   const locale = i18n.language === 'ru' ? 'ru-RU' : i18n.language === 'tkm' ? 'tk-TM' : 'en-US';
-  const dates = Array.from({ length: 6 }, (_, i) => {
+  const dates = Array.from({ length: settings.bookingDays }, (_, i) => {
     const d = new Date();
     d.setDate(d.getDate() + i + 1);
     return {
       day: d.toLocaleString(locale, { weekday: 'short' }),
       date: d.getDate(),
-      full: d.toISOString().split('T')[0],
+      // Local calendar date (toISOString() would shift it to UTC).
+      full: `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`,
     };
   });
 
-  const handleConfirm = (e: React.FormEvent) => {
+  const [sending, setSending] = useState(false);
+  const [failed, setFailed] = useState(false);
+
+  const handleConfirm = async (e: React.FormEvent) => {
     e.preventDefault();
-    addSubmission({
-      type: 'booking',
-      name: fullName.trim(),
-      email: email.trim(),
-      service: selectedService,
-      date: selectedDate,
-      time: selectedTime,
-    });
-    setDone(true);
+    if (sending) return;
+    setSending(true);
+    setFailed(false);
+    try {
+      await addSubmission({
+        type: 'booking',
+        name: fullName.trim(),
+        email: email.trim(),
+        service: selectedService,
+        date: selectedDate,
+        time: selectedTime,
+      });
+      setDone(true);
+    } catch {
+      setFailed(true);
+    } finally {
+      setSending(false);
+    }
   };
 
   return (
@@ -52,7 +67,7 @@ export default function BookConsultation() {
         {/* Left Panel */}
         <div className="lg:col-span-5">
           <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
-            <div className="inline-block px-4 py-1.5 rounded-full bg-brand-soft border border-brand-primary/15 text-brand-primary text-xs font-semibold mb-6">
+            <div className="inline-block px-4 py-1.5 rounded-btn bg-brand-soft border border-brand-primary/15 text-brand-primary text-xs font-semibold mb-6">
               {t('booking.badge')}
             </div>
             <h1 className="text-4xl md:text-5xl font-extrabold text-brand-ink mb-5">{t('booking.title')}</h1>
@@ -82,7 +97,7 @@ export default function BookConsultation() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-white border border-brand-border rounded-3xl p-6 md:p-8 shadow-card relative"
+            className="bg-brand-surface border border-brand-border rounded-3xl p-6 md:p-8 shadow-card relative"
           >
             {done ? (
               <div className="text-center py-12">
@@ -103,7 +118,7 @@ export default function BookConsultation() {
                     <div key={s} className="flex flex-col items-center gap-2 relative z-10">
                       <div
                         className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold transition-colors ${
-                          step >= s ? 'bg-brand-primary text-white' : 'bg-white border border-brand-border text-brand-slate'
+                          step >= s ? 'bg-brand-primary text-brand-on-primary' : 'bg-brand-surface border border-brand-border text-brand-slate'
                         }`}
                       >
                         {s}
@@ -127,7 +142,7 @@ export default function BookConsultation() {
                             className={`cursor-pointer p-4 rounded-xl border transition-all flex items-center gap-4 ${
                               selectedService === srv.id
                                 ? 'bg-brand-soft border-brand-primary'
-                                : 'bg-white border-brand-border hover:border-brand-primary/40'
+                                : 'bg-brand-surface border-brand-border hover:border-brand-primary/40'
                             }`}
                           >
                             <span className="text-2xl">{srv.icon}</span>
@@ -168,8 +183,8 @@ export default function BookConsultation() {
                               onClick={() => setSelectedDate(d.full)}
                               className={`cursor-pointer p-3 rounded-xl border text-center transition-all ${
                                 selectedDate === d.full
-                                  ? 'bg-brand-primary border-brand-primary text-white'
-                                  : 'bg-white border-brand-border text-brand-text hover:border-brand-primary/40'
+                                  ? 'bg-brand-primary border-brand-primary text-brand-on-primary'
+                                  : 'bg-brand-surface border-brand-border text-brand-text hover:border-brand-primary/40'
                               }`}
                             >
                               <div className="text-xs uppercase opacity-70 mb-1">{d.day}</div>
@@ -191,7 +206,7 @@ export default function BookConsultation() {
                               className={`cursor-pointer py-2.5 px-4 rounded-xl border text-center font-medium transition-all ${
                                 selectedTime === time
                                   ? 'bg-brand-soft border-brand-primary text-brand-primary'
-                                  : 'bg-white border-brand-border text-brand-text hover:border-brand-primary/40'
+                                  : 'bg-brand-surface border-brand-border text-brand-text hover:border-brand-primary/40'
                               }`}
                             >
                               {time}
@@ -254,11 +269,17 @@ export default function BookConsultation() {
                         </div>
                       </div>
 
+                      {failed && (
+                        <p className="mt-6 text-sm text-red-600 bg-red-50 border border-red-200 rounded-xl px-4 py-3">
+                          {t('booking.error')}
+                        </p>
+                      )}
+
                       <div className="mt-8 flex justify-between items-center">
                         <button type="button" onClick={() => setStep(2)} className="text-brand-slate hover:text-brand-ink font-medium px-2">
                           {t('booking.back')}
                         </button>
-                        <button type="submit" className="btn-primary">
+                        <button type="submit" disabled={sending} className="btn-primary disabled:opacity-60">
                           {t('booking.confirm')}
                         </button>
                       </div>

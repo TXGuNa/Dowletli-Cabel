@@ -15,7 +15,7 @@ export default function Products() {
       <div className="absolute bottom-0 left-0 w-[480px] h-[480px] bg-brand-primary/12 rounded-full blur-[150px] pointer-events-none" />
       <div className="pt-28 sm:pt-36 pb-20 sm:pb-24 container mx-auto px-6 relative">
         <div className="max-w-4xl mb-12 sm:mb-16">
-          <span className="eyebrow mb-6">{t('brand.tagline')}</span>
+          <span className="eyebrow mb-6">{t('products.eyebrow')}</span>
           <h1 className="text-4xl md:text-7xl font-extrabold text-brand-ink tracking-tight leading-[1.0] mb-6">
             <Trans i18nKey="products.title" components={{ 1: <span className="text-gradient" /> }} />
           </h1>
@@ -26,7 +26,14 @@ export default function Products() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {products.map((p, index) => {
-            const text = p.t[lang] || p.t.en;
+            const own = p.t[lang];
+            const en = p.t.en;
+            // Per-field fallback to English when a translation is missing.
+            const text = {
+              title: own?.title?.trim() || en?.title || '',
+              description: own?.description?.trim() || en?.description || '',
+              specs: own?.specs?.some((x) => x.trim()) ? own.specs.filter((x) => x.trim()) : (en?.specs || []).filter((x) => x.trim()),
+            };
             const category = t(`products.categories.${p.category}`, { defaultValue: p.category });
             return (
               <motion.div

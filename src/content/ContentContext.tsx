@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import {
   type AllContent,
+  CONTENT_EVENT,
   applyToI18n,
   clearStoredContent,
   getDefaults,
@@ -24,6 +25,17 @@ export function ContentProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     applyToI18n(content);
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Newly published content arrived after the first render -> apply it live.
+  useEffect(() => {
+    const refresh = () => {
+      const next = loadContent();
+      setContent(next);
+      applyToI18n(next);
+    };
+    window.addEventListener(CONTENT_EVENT, refresh);
+    return () => window.removeEventListener(CONTENT_EVENT, refresh);
   }, []);
 
   const value = useMemo<ContentContextValue>(

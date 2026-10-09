@@ -34,13 +34,13 @@ export default function Header() {
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled
-          ? 'bg-white/90 md:bg-white/60 backdrop-blur-xl py-3 border-b border-white/60 shadow-soft'
+          ? 'bg-brand-surface/90 md:bg-brand-surface/60 backdrop-blur-xl py-3 border-b border-glass shadow-soft'
           : 'bg-transparent py-5 border-b border-transparent'
       }`}
     >
       <div className="container mx-auto px-6 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2.5 group">
-          <img src="/assets/logo.png" alt="Döwletli Logo" className="h-9 w-9 object-contain" />
+          <img src={settings.logoImage || '/assets/logo.png'} alt={settings.brandName} className="h-9 w-9 object-contain" />
           <span className="text-lg font-extrabold tracking-tight text-brand-ink">
             {settings.brandName}
           </span>
@@ -61,9 +61,11 @@ export default function Header() {
           ))}
           <span className="w-px h-5 bg-brand-border" />
           <LanguageSwitcher />
-          <Link to="/book" className="btn-primary !px-5 !py-2.5 text-sm">
-            {t('hero.book')}
-          </Link>
+          {settings.sections.headerBook && (
+            <Link to="/book" className="btn-primary !px-5 !py-2.5 text-sm">
+              {t('nav.book')}
+            </Link>
+          )}
         </nav>
 
         {/* Mobile Toggle */}
@@ -78,7 +80,7 @@ export default function Header() {
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="md:hidden absolute top-full left-0 right-0 bg-white/95 border-t border-brand-border shadow-card p-6 flex flex-col gap-1">
+        <div className="md:hidden absolute top-full left-0 right-0 bg-brand-surface border-t border-brand-border shadow-card p-6 flex flex-col gap-1">
           {navLinks.map((link) => (
             <Link
               key={link.key}
@@ -93,9 +95,11 @@ export default function Header() {
           ))}
           <div className="pt-5 flex items-center justify-between gap-4">
             <LanguageSwitcher />
-            <Link to="/book" onClick={() => setIsMobileMenuOpen(false)} className="btn-primary text-sm flex-1">
-              {t('hero.book')}
-            </Link>
+            {settings.sections.headerBook && (
+              <Link to="/book" onClick={() => setIsMobileMenuOpen(false)} className="btn-primary text-sm flex-1">
+                {t('nav.book')}
+              </Link>
+            )}
           </div>
         </div>
       )}

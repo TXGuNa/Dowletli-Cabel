@@ -42,7 +42,7 @@ export default function Gallery() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setSelectedImage(null)}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-brand-ink/90 backdrop-blur-sm p-4 md:p-10 cursor-zoom-out"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-brand-overlay/90 backdrop-blur-sm p-4 md:p-10 cursor-zoom-out"
           >
             <button
               onClick={() => setSelectedImage(null)}
@@ -104,7 +104,7 @@ export default function Gallery() {
               transition={{ duration: 0.3 }}
               key={img.id + index}
               onClick={() => setSelectedImage(img.image)}
-              className="group relative rounded-3xl overflow-hidden aspect-[4/3] bg-white/60 backdrop-blur-xl border border-white/70 shadow-glass cursor-zoom-in hover:-translate-y-1 hover:shadow-card transition-all duration-300"
+              className="group relative rounded-3xl overflow-hidden aspect-[4/3] glass cursor-zoom-in hover:-translate-y-1 hover:shadow-card transition-all duration-300"
             >
               <img
                 src={img.image}
@@ -112,7 +112,7 @@ export default function Gallery() {
                 className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
               />
               <div className="absolute inset-x-0 bottom-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                <span className="text-xs font-semibold tracking-[0.14em] uppercase text-brand-ink bg-white/90 backdrop-blur px-3 py-1 rounded-full border border-brand-border">
+                <span className="text-xs font-semibold tracking-[0.14em] uppercase text-brand-ink bg-brand-surface/90 backdrop-blur px-3 py-1 rounded-btn border border-brand-border">
                   {t(`gallery.filters.${img.category}`)}
                 </span>
               </div>

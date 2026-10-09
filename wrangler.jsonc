@@ -1,13 +1,35 @@
 {
-  // Cloudflare Workers — serve the built Vite SPA as static assets.
+  // Cloudflare Workers — serves the built Vite SPA (./dist) and a small API
+  // (worker/index.ts) that stores the admin panel's content in Workers KV, so
+  // pressing Save in /admin publishes to every visitor immediately.
   // `build.command` runs `npm run build` before deploy so ./dist exists.
+  "$schema": "node_modules/wrangler/config-schema.json",
   "name": "dowletli",
+  "main": "worker/index.ts",
   "compatibility_date": "2024-11-01",
   "build": {
     "command": "npm run build"
   },
   "assets": {
     "directory": "./dist",
-    "not_found_handling": "single-page-application"
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application",
+    // Only /api/* reaches the Worker code; everything else is served as static files.
+    "run_worker_first": ["/api/*"]
+  },
+  // KV namespace holding the site content, uploaded images and form submissions.
+  // No "id" needed: wrangler (>= 4.45) creates the namespace on the first deploy
+  // and keeps it linked. If you create it yourself in the dashboard instead, add
+  // its id here:  { "binding": "SITE", "id": "<namespace id>" }
+  "kv_namespaces": [
+    { "binding": "SITE" }
+  ],
+  "vars": {
+    // Admin username. The password is a SECRET named ADMIN_PASSWORD — set it in
+    // the Cloudflare dashboard (Worker -> Settings -> Variables and Secrets), never here.
+    "ADMIN_USERNAME": "nuraly"
+  },
+  "observability": {
+    "enabled": true
   }
 }
